@@ -1,15 +1,15 @@
 [project]
-name = "hello-world"
+name = "blahaj-bot"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "urllib3>=2.2.3",
 ]
 
 [project.scripts]
-hello = "hello_world:hello"
+bot = "blahaj_bot:bot"
 
 [build-system]
 requires = ["hatchling"]

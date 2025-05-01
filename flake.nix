@@ -66,8 +66,8 @@
       # This example is only using x86_64-linux
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
 
-      # Use Python 3.12 from nixpkgs
-      python = pkgs.python312;
+      # Use Python 3.13 from nixpkgs
+      python = pkgs.python313;
 
       # Construct package set
       pythonSet =
@@ -88,13 +88,13 @@
       # Package a virtual environment as our main application.
       #
       # Enable no optional dependencies for production build.
-      packages.x86_64-linux.default = pythonSet.mkVirtualEnv "hello-world-env" workspace.deps.default;
+      packages.x86_64-linux.default = pythonSet.mkVirtualEnv "blahaj-bot-env" workspace.deps.default;
 
-      # Make hello runnable with `nix run`
+      # Make bot runnable with `nix run`
       apps.x86_64-linux = {
         default = {
           type = "app";
-          program = "${self.packages.x86_64-linux.default}/bin/hello";
+          program = "${self.packages.x86_64-linux.default}/bin/bot";
         };
       };
 
@@ -149,7 +149,7 @@
 
                 # Apply fixups for building an editable package of your workspace packages
                 (final: prev: {
-                  hello-world = prev.hello-world.overrideAttrs (old: {
+                  blahaj-bot = prev.blahaj-bot.overrideAttrs (old: {
                     # It's a good idea to filter the sources going into an editable build
                     # so the editable package doesn't have to be rebuilt on every change.
                     src = lib.fileset.toSource {
@@ -157,7 +157,7 @@
                       fileset = lib.fileset.unions [
                         (old.src + "/pyproject.toml")
                         (old.src + "/README.md")
-                        (old.src + "/hello_world/__init__.py")
+                        (old.src + "/blahaj_bot/__init__.py")
                       ];
                     };
 
@@ -181,7 +181,7 @@
             # Build virtual environment, with local packages being editable.
             #
             # Enable all optional dependencies for development.
-            virtualenv = editablePythonSet.mkVirtualEnv "hello-world-dev-env" workspace.deps.all;
+            virtualenv = editablePythonSet.mkVirtualEnv "blahaj-bot-dev-env" workspace.deps.all;
 
           in
           pkgs.mkShell {

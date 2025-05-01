@@ -157,7 +157,7 @@
                       fileset = lib.fileset.unions [
                         (old.src + "/pyproject.toml")
                         (old.src + "/README.md")
-                        (old.src + "/src/hello_world/__init__.py")
+                        (old.src + "/hello_world/__init__.py")
                       ];
                     };
 

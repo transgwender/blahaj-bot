@@ -39,11 +39,13 @@ in
 
     users.extraUsers.blahaj-bot = {
       description = "blahaj-bot";
-      group = {};
+      group = "blahaj-bot";
       # home = baseDir;
       isSystemUser = true;
       useDefaultShell = true;
     };
+
+    users.groups.blahaj-bot = {};
 
     environment.systemPackages = [ pkgs.blahaj-bot ];
 

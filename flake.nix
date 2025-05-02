@@ -212,7 +212,7 @@
       };
 
       nixosModules = import ./nixos-modules {
-        blahaj-bot-pkg = packages.x86_64-linux.default;
+        blahaj-bot-pkg = self.packages.x86_64-linux.default;
       };
     };
 }

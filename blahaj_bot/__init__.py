@@ -1,9 +1,15 @@
 from blahaj_bot.client import MyClient
 import discord
+import logging
 import sys
 
+logger = logging.getLogger(__name__)
+
 def bot() -> None:
-    print(sys.argv[1], "Hello from blahaj-bot!!!")
+
+    logging.basicConfig(filename='blahaj.log', level=logging.INFO)
+
+    logger.info(sys.argv[1], "Hello from blahaj-bot!!!")
 
     intents = discord.Intents.default()
     intents.message_content = True

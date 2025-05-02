@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib ? pkgs.lib,
+  blahaj-bot-pkg,
   ...
 }:
 

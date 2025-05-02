@@ -53,7 +53,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Restart = "on-failure";
-        ExecStart = "+${pkgs.blahaj-bot}/bin/bot ${cfg.token}";
+        ExecStart = "+${pkgs.blahaj-bot}/bin/bot ${cfg.token} -u";
         User = "blahaj-bot";
         # DynamicUser = "yes";
         RuntimeDirectory = "blahaj-bot";

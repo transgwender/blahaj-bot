@@ -55,7 +55,7 @@ in
       in {
         Restart = "on-failure";
         ExecStart = "${pkg}/bin/bot ${cfg.token}";
-        DynamicUser = "yes";
+        User = "blahaj-bot";
         RuntimeDirectory = "blahaj-bot";
         RuntimeDirectoryMode = "0755";
         StateDirectory = "blahaj-bot";

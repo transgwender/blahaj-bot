@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib ? pkgs.lib,
+  blahaj-bot-pkg,
   ...
 }:
 
@@ -47,14 +48,13 @@ in
     };
 
 
-    environment.systemPackages = [ pkgs.blahaj-bot ];
+    environment.systemPackages = [ blahaj-bot-pkg ];
 
     systemd.services.blahaj-bot = {
       wantedBy = [ "multi-user.target" ];
-      serviceConfig = let pkg = self.packages.${pkgs.system}.default;
-      in {
+      serviceConfig = {
         Restart = "on-failure";
-        ExecStart = "${pkg}/bin/bot ${cfg.token}";
+        ExecStart = "${blahaj-bot-pkg}/bin/bot ${cfg.token}";
         User = "blahaj-bot";
         # DynamicUser = "yes";
         RuntimeDirectory = "blahaj-bot";

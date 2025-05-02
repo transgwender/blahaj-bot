@@ -1,5 +1,7 @@
-{ }:
+{ blahaj-bot-pkg }:
 
 {
-  blahaj-bot = import ./blahaj-bot-service.nix;
+  blahaj-bot = import ./blahaj-bot-service.nix {
+    inherit blahaj-bot-pkg;
+  };
 }

@@ -37,14 +37,16 @@ in
   # Implementation
   config = mkIf cfg.enable {
 
-    users.groups.blahaj-bot = {};
-    users.users.blahaj-bot = {
-      description = "blahaj-bot";
-      # home = baseDir;
-      isSystemUser = true;
-      useDefaultShell = true;
-      group = "blahaj-bot";
-    };
+    # users.groups.blahaj-bot = {};
+    # users.users.blahaj-bot = {
+    #   description = "blahaj-bot";
+    #   # home = baseDir;
+    #   isSystemUser = true;
+    #   useDefaultShell = true;
+    #   group = "blahaj-bot";
+    # };
+
+
     environment.systemPackages = [ pkgs.blahaj-bot ];
 
     systemd.services.blahaj-bot = {
@@ -53,7 +55,8 @@ in
       in {
         Restart = "on-failure";
         ExecStart = "${pkg}/bin/bot ${cfg.token}";
-        User = "blahaj-bot";
+        # User = "blahaj-bot";
+        DynamicUser = "yes";
         RuntimeDirectory = "blahaj-bot";
         RuntimeDirectoryMode = "0755";
         StateDirectory = "blahaj-bot";

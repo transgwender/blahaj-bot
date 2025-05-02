@@ -37,11 +37,9 @@ in
   # Implementation
   config = mkIf cfg.enable {
 
-    users.extraGroups.blahaj-bot = { };
-
     users.extraUsers.blahaj-bot = {
       description = "blahaj-bot";
-      group = "blahaj-bot";
+      # group = "blahaj-bot";
       # home = baseDir;
       isSystemUser = true;
       useDefaultShell = true;

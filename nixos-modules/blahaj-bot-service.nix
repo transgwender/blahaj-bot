@@ -62,6 +62,7 @@ in
         StateDirectoryMode = "0700";
         CacheDirectory = "blahaj-bot";
         CacheDirectoryMode = "0750";
+        StandardOutput = "journal";
       };
     };
   };

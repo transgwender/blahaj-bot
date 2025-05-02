@@ -210,5 +210,9 @@
             '';
           };
       };
+
+      nixosModules = import ./nixos-modules {
+
+      };
     };
 }

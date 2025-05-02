@@ -51,9 +51,10 @@ in
 
     systemd.services.blahaj-bot = {
       wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
+      serviceConfig = let pkg = self.packages.${pkgs.system}.default;
+      in {
         Restart = "on-failure";
-        ExecStart = "${pkgs.blahaj-bot}/bin/bot ${cfg.token}";
+        ExecStart = "${pkg}/bin/bot ${cfg.token}";
         User = "blahaj-bot";
         # DynamicUser = "yes";
         RuntimeDirectory = "blahaj-bot";

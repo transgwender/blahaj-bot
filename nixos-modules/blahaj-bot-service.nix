@@ -39,7 +39,7 @@ in
 
     users.extraUsers.blahaj-bot = {
       description = "blahaj-bot";
-      # group = "blahaj-bot";
+      group = {};
       # home = baseDir;
       isSystemUser = true;
       useDefaultShell = true;

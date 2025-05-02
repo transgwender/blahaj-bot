@@ -37,11 +37,13 @@ in
   # Implementation
   config = mkIf cfg.enable {
 
-    users.extraUsers.blahaj-bot = {
+    users.groups.blahaj-bot = {};
+    users.users.blahaj-bot = {
       description = "blahaj-bot";
       # home = baseDir;
       isSystemUser = true;
       useDefaultShell = true;
+      group = "blahaj-bot";
     };
     environment.systemPackages = [ pkgs.blahaj-bot ];
 

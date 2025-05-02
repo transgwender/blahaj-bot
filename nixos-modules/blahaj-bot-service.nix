@@ -27,7 +27,6 @@ in
 
       token = mkOption {
         type = types.path;
-        default = "./.";
         description = ''
           Path to the token secret
         '';

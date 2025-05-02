@@ -64,7 +64,11 @@
       };
 
       # This example is only using x86_64-linux
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        overlays = overlayList;
+      };
+      overlayList = [ self.overlays.default ];
 
       # Use Python 3.13 from nixpkgs
       python = pkgs.python313;
@@ -83,19 +87,27 @@
             ]
           );
 
-    in
+    in rec
     {
+
+      # A Nixpkgs overlay that provides a 'blahaj-bot' package.
+      overlays.default = final: prev: { blahaj-bot = final.callPackage ./package.nix { pythonSet = pythonSet; workspace = workspace; }; };
+
       # Package a virtual environment as our main application.
       #
       # Enable no optional dependencies for production build.
-      packages.x86_64-linux.default = pythonSet.mkVirtualEnv "blahaj-bot-env" workspace.deps.default;
+      packages.x86_64-linux = rec {
+        blahaj-bot = pkgs.blahaj-bot;
+        default = blahaj-bot;
+      };
 
       # Make bot runnable with `nix run`
-      apps.x86_64-linux = {
-        default = {
+      apps.x86_64-linux = rec {
+        blahaj-bot = {
           type = "app";
-          program = "${self.packages.x86_64-linux.default}/bin/bot";
+          program = "${pkgs.blahaj-bot}/bin/bot";
         };
+        default = blahaj-bot;
       };
 
       # This example provides two different modes of development:
@@ -212,7 +224,7 @@
       };
 
       nixosModules = import ./nixos-modules {
-        blahaj-bot-pkg = self.packages.x86_64-linux.default;
+        overlays = overlayList;
       };
     };
 }

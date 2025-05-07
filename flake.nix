@@ -22,6 +22,12 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Agenix secret manager
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -32,6 +38,7 @@
       uv2nix,
       pyproject-nix,
       pyproject-build-systems,
+      agenix,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -231,18 +238,18 @@
         };
       }
     ) // {
-      nixosConfigurations.container = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.container = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
 
           modules = [
             agenix.nixosModules.default
-            blahaj-bot.nixosModules.${system}.default
+            self.nixosModules.${system}.default
             ({ pkgs, ... }: {
               nixpkgs.overlays = [
-                blahaj-bot.overlays.${system}.default
+                self.overlays.${system}.default
               ];
             })
-            ({ pkgs, ... }: {
+            ({ pkgs, config, ... }: {
               # Enable flakes
               nix = {
                 package = pkgs.nix;

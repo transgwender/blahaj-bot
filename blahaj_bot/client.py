@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 class MyClient(discord.Client):
     async def on_ready(self):
-        logger.info(f'Logged on as {self.user}!')
+        logger.info(f'Logged on as {self.user}! - Version 0.0.1')
 
     async def on_message(self, message):
         logger.info(f'Message from {message.author}: {message.content}')

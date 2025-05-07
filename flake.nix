@@ -234,10 +234,7 @@
       nixosConfigurations.container = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          specialArgs = { inherit inputs; };
-
           modules = [
-            ./containers/blahaj-bot.nix
             agenix.nixosModules.default
             blahaj-bot.nixosModules.${system}.default
             ({ pkgs, ... }: {

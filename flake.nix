@@ -230,6 +230,53 @@
           overlays = overlayList;
         };
       }
-    );
-    
+    ) // {
+      nixosConfigurations.container = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = { inherit inputs; };
+
+          modules = [
+            ./containers/blahaj-bot.nix
+            agenix.nixosModules.default
+            blahaj-bot.nixosModules.${system}.default
+            ({ pkgs, ... }: {
+              nixpkgs.overlays = [
+                blahaj-bot.overlays.${system}.default
+              ];
+            })
+            ({ pkgs, ... }: {
+              # Enable flakes
+              nix = {
+                package = pkgs.nix;
+                settings.experimental-features = [ "nix-command" "flakes" ];
+              };
+              
+              # Only allow this to boot as a container
+              boot.isContainer = true;
+
+              environment.systemPackages = with pkgs; [
+                inputs.agenix.packages."${system}".default
+              ];
+              
+              networking.hostName = "blahaj-bot";
+
+              age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]; # isn't set automatically for some reason
+                  
+              age.secrets.blahaj-bot-token = {
+                file = ../secrets/blahaj-bot-token.age;
+                owner = "blahaj-bot";
+              };
+                  
+              services.blahaj-bot = {
+                enable = true;
+                token = config.age.secrets.blahaj-bot-token.path;
+              };
+
+              system.stateVersion = "24.11";
+            })
+          ];
+        };
+
+    };
 }

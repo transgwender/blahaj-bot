@@ -31,7 +31,7 @@
   };
 
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
       flake-utils,
@@ -241,6 +241,8 @@
       nixosConfigurations.container = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
 
+          specialArgs = { inherit inputs; };
+
           modules = [
             agenix.nixosModules.default
             self.nixosModules.${system}.default
@@ -249,7 +251,7 @@
                 self.overlays.${system}.default
               ];
             })
-            ({ pkgs, config, ... }: {
+            ({ pkgs, config, inputs, ... }: {
               # Enable flakes
               nix = {
                 package = pkgs.nix;

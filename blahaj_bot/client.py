@@ -17,3 +17,6 @@ class MyClient(discord.Client):
 
         if message.content.startswith('$hello'):
             await message.channel.send('Hello!')
+        
+        if message.content.startswith('$pat'):
+            await message.channel.send('pat the pand')

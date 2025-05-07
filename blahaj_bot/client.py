@@ -11,3 +11,9 @@ class MyClient(discord.Client):
 
     async def on_message(self, message):
         logger.info(f'Message from {message.author}: {message.content}')
+
+        if message.author == self.user:
+            return
+
+        if message.content.startswith('$hello'):
+            await message.channel.send('Hello!')

@@ -22,12 +22,6 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Agenix secret manager
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -38,7 +32,6 @@
       uv2nix,
       pyproject-nix,
       pyproject-build-systems,
-      agenix,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -244,7 +237,6 @@
           specialArgs = { inherit inputs; };
 
           modules = [
-            agenix.nixosModules.default
             self.nixosModules.${system}.default
             ({ pkgs, ... }: {
               nixpkgs.overlays = [
@@ -252,24 +244,14 @@
               ];
             })
             ({ pkgs, config, inputs, ... }: {
-              # Enable flakes
-              nix = {
-                package = pkgs.nix;
-                settings.experimental-features = [ "nix-command" "flakes" ];
-              };
-              
               # Only allow this to boot as a container
               boot.isContainer = true;
-
-              environment.systemPackages = with pkgs; [
-                inputs.agenix.packages."${system}".default
-              ];
               
               networking.hostName = "blahaj-bot";
                   
               services.blahaj-bot = {
                 enable = true;
-                token = config.age.secrets.blahaj-bot-token.path;
+                token = "/var/lib/blahaj-bot/token";
               };
 
               system.stateVersion = "24.11";

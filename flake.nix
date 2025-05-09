@@ -267,17 +267,17 @@
               
               networking.hostName = "blahaj-bot";
 
-              # age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]; # isn't set automatically for some reason
+              age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]; # isn't set automatically for some reason
                   
-              # age.secrets.blahaj-bot-token = {
-              #   file = /secrets/blahaj-bot-token.age;
-              #   owner = "blahaj-bot";
-              # };
+              age.secrets.blahaj-bot-token = {
+                file = /var/lib/blahaj-bot/token.age;
+                owner = "blahaj-bot";
+              };
                   
-              # services.blahaj-bot = {
-              #   enable = true;
-                # token = config.age.secrets.blahaj-bot-token.path;
-              # };
+              services.blahaj-bot = {
+                enable = true;
+                token = config.age.secrets.blahaj-bot-token.path;
+              };
 
               system.stateVersion = "24.11";
             })

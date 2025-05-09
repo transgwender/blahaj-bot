@@ -266,13 +266,6 @@
               ];
               
               networking.hostName = "blahaj-bot";
-
-              age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]; # isn't set automatically for some reason
-                  
-              age.secrets.blahaj-bot-token = {
-                file = /var/lib/blahaj-bot/token.age;
-                owner = "blahaj-bot";
-              };
                   
               services.blahaj-bot = {
                 enable = true;
@@ -283,6 +276,5 @@
             })
           ];
         };
-
     };
 }

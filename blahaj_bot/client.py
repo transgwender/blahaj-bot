@@ -20,3 +20,6 @@ class MyClient(discord.Client):
         
         if message.content.startswith('$pat'):
             await message.channel.send('pat the pand')
+
+        if message.content.startswith('$github'):
+            await message.channel.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')

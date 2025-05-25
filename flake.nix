@@ -69,7 +69,6 @@
         # This example is only using x86_64-linux
         pkgs = import nixpkgs {
           inherit system;
-          config.allowUnfree = true;
           overlays = overlayList;
         };
         overlayList = [ self.overlays.${system}.default ];

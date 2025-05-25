@@ -248,15 +248,21 @@
               boot.isContainer = true;
               
               networking.hostName = "blahaj-bot";
+
+              environment.systemPackages = [
+                pkgs.ferretdb
+              ];
                   
               services.blahaj-bot = {
                 enable = true;
                 token = "/var/lib/blahaj-bot/token";
               };
 
-              services.mongodb = {
+              services.ferretdb = {
                 enable = true;
-                dbpath = "/var/lib/blahaj-bot/db/mongodb";
+                settings = {
+                  FERRETDB_STATE_DIR = "/var/lib/blahaj-bot/db/mongodb";
+                };
               };
 
               system.stateVersion = "24.11";

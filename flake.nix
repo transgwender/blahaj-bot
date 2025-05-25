@@ -261,7 +261,7 @@
               services.ferretdb = {
                 enable = true;
                 settings = {
-                  FERRETDB_STATE_DIR = "/var/lib/blahaj-bot/db/mongodb";
+                  FERRETDB_STATE_DIR = "/var/lib/blahaj-bot/db";
                 };
               };
 

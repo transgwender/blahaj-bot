@@ -236,6 +236,8 @@
 
           specialArgs = { inherit inputs; };
 
+          nixpkgs.config.allowUnfree = true;
+
           modules = [
             self.nixosModules.${system}.default
             ({ pkgs, ... }: {

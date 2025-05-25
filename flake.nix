@@ -69,6 +69,7 @@
         # This example is only using x86_64-linux
         pkgs = import nixpkgs {
           inherit system;
+          config.allowUnfree = true;
           overlays = overlayList;
         };
         overlayList = [ self.overlays.${system}.default ];
@@ -234,11 +235,7 @@
       nixosConfigurations.container = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
 
-          allowed-unfree-packages = [
-            "mongodb"
-          ];
-
-          specialArgs = { inherit allowed-unfree-packages inputs; };
+          specialArgs = { inherit inputs; };
 
           modules = [
             self.nixosModules.${system}.default
@@ -247,13 +244,9 @@
                 self.overlays.${system}.default
               ];
             })
-            ({ pkgs, config, lib, allowed-unfree-packages, inputs, ... }: {
+            ({ pkgs, config, inputs, ... }: {
               # Only allow this to boot as a container
               boot.isContainer = true;
-
-              nixpkgs.config = {
-                allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) allowed-unfree-packages;
-              };
               
               networking.hostName = "blahaj-bot";
                   

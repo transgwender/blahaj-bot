@@ -254,6 +254,11 @@
                 token = "/var/lib/blahaj-bot/token";
               };
 
+              services.mongodb = {
+                enable = true;
+                dbpath = "/var/lib/blahaj-bot/db/mongodb";
+              };
+
               system.stateVersion = "24.11";
             })
           ];

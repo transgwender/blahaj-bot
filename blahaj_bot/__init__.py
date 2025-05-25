@@ -1,4 +1,5 @@
 from blahaj_bot.client import MyClient
+from pymongo import MongoClient
 import discord
 import logging
 import sys
@@ -20,5 +21,26 @@ def bot() -> None:
     TOKEN = file.read()
     file.close()
 
-    client = MyClient(intents=intents)
-    client.run(TOKEN)
+    db_client = MongoClient('localhost', 27017)
+
+    # Access database
+    mydatabase = db_client['name_of_the_database']
+
+    # Access collection of the database
+    mycollection=mydatabase['myTable']
+
+    # dictionary to be added in the database
+    rec = {
+        "title": 'MongoDB and Python', 
+        "description": 'MongoDB is no SQL database', 
+        "tags": ['mongodb', 'database', 'NoSQL'], 
+        "viewers": 104
+    }
+
+    # inserting the data in the database
+    rec = mydatabase.myTable.insert(rec)
+
+
+    bot_client = MyClient(intents=intents)
+    bot_client.run(TOKEN)
+

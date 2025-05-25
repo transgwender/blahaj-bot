@@ -234,9 +234,11 @@
       nixosConfigurations.container = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
 
-          specialArgs = { inherit inputs; };
+          allowed-unfree-packages = [
+            "mongodb"
+          ];
 
-          nixpkgs.config.allowUnfree = true;
+          specialArgs = { inherit allowed-unfree-packages inputs; };
 
           modules = [
             self.nixosModules.${system}.default

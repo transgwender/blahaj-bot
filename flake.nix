@@ -247,9 +247,13 @@
                 self.overlays.${system}.default
               ];
             })
-            ({ pkgs, config, inputs, ... }: {
+            ({ pkgs, config, lib, allowed-unfree-packages, inputs, ... }: {
               # Only allow this to boot as a container
               boot.isContainer = true;
+
+              nixpkgs.config = {
+                allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) allowed-unfree-packages;
+              };
               
               networking.hostName = "blahaj-bot";
                   

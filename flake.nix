@@ -261,7 +261,7 @@
               services.ferretdb = {
                 enable = true;
                 settings = {
-                  FERRETDB_STATE_DIR = "/var/lib/blahaj-bot/db";
+                  FERRETDB_STATE_DIR = "/var/lib/db/blahaj-bot";
                 };
               };
 

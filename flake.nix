@@ -253,7 +253,14 @@
                 pkgs.ferretdb
               ];
 
-              users.users.ferretdb.uid = 1000;
+              users.extraGroups.ferretdb = {};
+              users.extraUsers.ferretdb = {
+                description = "ferretdb";
+                group = "blahaj-bot";
+                isSystemUser = true;
+                useDefaultShell = true;
+                uid = 1000;
+              };
                   
               services.blahaj-bot = {
                 enable = true;

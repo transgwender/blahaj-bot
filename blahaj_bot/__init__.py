@@ -21,24 +21,24 @@ def bot() -> None:
     TOKEN = file.read()
     file.close()
 
-    db_client = MongoClient('localhost', 27017)
+    # db_client = MongoClient('localhost', 27017)
 
-    # Access database
-    mydatabase = db_client['name_of_the_database']
+    # # Access database
+    # mydatabase = db_client['name_of_the_database']
 
-    # Access collection of the database
-    mycollection=mydatabase['myTable']
+    # # Access collection of the database
+    # mycollection=mydatabase['myTable']
 
-    # dictionary to be added in the database
-    rec = {
-        "title": 'MongoDB and Python', 
-        "description": 'MongoDB is no SQL database', 
-        "tags": ['mongodb', 'database', 'NoSQL'], 
-        "viewers": 104
-    }
+    # # dictionary to be added in the database
+    # rec = {
+    #     "title": 'MongoDB and Python', 
+    #     "description": 'MongoDB is no SQL database', 
+    #     "tags": ['mongodb', 'database', 'NoSQL'], 
+    #     "viewers": 104
+    # }
 
-    # inserting the data in the database
-    rec = mydatabase.myTable.insert(rec)
+    # # inserting the data in the database
+    # rec = mydatabase.myTable.insert(rec)
 
 
     bot_client = MyClient(intents=intents)

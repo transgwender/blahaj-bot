@@ -264,7 +264,7 @@
                   
               services.blahaj-bot = {
                 enable = true;
-                token = "/var/lib/blahaj-bot/token";
+                token = "/etc/blahaj-bot/token";
               };
 
               services.ferretdb = {
@@ -272,7 +272,7 @@
                 settings = {
                   FERRETDB_SETUP_USERNAME = "ferretdb";
                   FERRETDB_SETUP_DATABASE = "discord";
-                  FERRETDB_STATE_DIR = "/var/lib/db/blahaj-bot";
+                  FERRETDB_STATE_DIR = "/var/lib/blahaj-bot/db";
                 };
               };
 

@@ -269,9 +269,9 @@
 
               services.ferretdb = {
                 enable = true;
-                settings = {
-                  FERRETDB_STATE_DIR = "/data/blahaj-bot/db";
-                };
+                # settings = {
+                #   FERRETDB_STATE_DIR = "/data/blahaj-bot/db";
+                # };
               };
 
               system.stateVersion = "24.11";

@@ -4,10 +4,11 @@ import discord
 import logging
 
 logger = logging.getLogger(__name__)
+version = "0.0.2"
 
 class MyClient(discord.Client):
     async def on_ready(self):
-        logger.info(f'Logged on as {self.user}! - Version 0.0.1')
+        logger.info(f'Logged on as {self.user}! - Version {version}')
 
     async def on_message(self, message):
         logger.info(f'Message from {message.author}: {message.content}')
@@ -23,3 +24,6 @@ class MyClient(discord.Client):
 
         if message.content.startswith('$github'):
             await message.channel.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
+
+        if message.content.startswith('$version'):
+            await message.channel.send(f'Version {version}')

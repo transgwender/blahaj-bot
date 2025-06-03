@@ -270,8 +270,6 @@
               services.ferretdb = {
                 enable = true;
                 settings = {
-                  FERRETDB_SETUP_USERNAME = "ferretdb";
-                  FERRETDB_SETUP_DATABASE = "discord";
                   FERRETDB_STATE_DIR = "/data/blahaj-bot/db";
                 };
               };

@@ -23,23 +23,11 @@ def bot() -> None:
 
     db_client = MongoClient('localhost', 27017)
 
-    # Access database
-    mydatabase = db_client['name_of_the_database']
-
-    # Access collection of the database
-    mycollection=mydatabase['myTable']
-
-    # dictionary to be added in the database
-    rec = {
-        "title": 'MongoDB and Python', 
-        "description": 'MongoDB is no SQL database', 
-        "tags": ['mongodb', 'database', 'NoSQL'], 
-        "viewers": 104
-    }
-
-    # inserting the data in the database
-    rec = mydatabase.myTable.insert(rec)
-
+    mydb = db_client["mydatabase"]
+    mycol = mydb["customers"]
+    mydict = { "name": "John", "address": "Highway 37" }
+    x = mycol.insert_one(mydict)
+    print(x.inserted_id) 
 
     bot_client = MyClient(intents=intents)
     bot_client.run(TOKEN)

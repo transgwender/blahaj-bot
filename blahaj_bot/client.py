@@ -16,9 +16,9 @@ class MyClient(discord.Client):
 
         mydb = self.db["discord"]
         mycol = mydb["customers"]
-        mydict = { "name": "John", "address": "Highway 37" }
+        mydict = { "name": "Bill", "address": "Road 69" }
         x = mycol.insert_one(mydict)
-        print(x.inserted_id) 
+        self.logger.info(x.inserted_id)
 
     async def on_message(self, message):
         self.logger.info(f'Message from {message.author}: {message.content}')

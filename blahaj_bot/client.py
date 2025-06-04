@@ -2,13 +2,19 @@
 
 import discord
 import logging
+import pymongo
 
 logger = logging.getLogger(__name__)
 version = "0.0.2"
 
-class MyClient(discord.Client):
+class MyClient(discord.Client, pymongo.MongoClient):
     async def on_ready(self):
         logger.info(f'Logged on as {self.user}! - Version {version}')
+        mydb = self["discord"]
+        mycol = mydb["users"]
+        mydict = { "username": "John", "id": "111" }
+        x = mycol.insert_one(mydict)
+        print(x.inserted_id) 
 
     async def on_message(self, message):
         logger.info(f'Message from {message.author}: {message.content}')

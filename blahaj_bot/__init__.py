@@ -21,14 +21,6 @@ def bot() -> None:
     TOKEN = file.read()
     file.close()
 
-    db_client = MongoClient('localhost', 27017)
-
-    mydb = db_client["mydatabase"]
-    mycol = mydb["customers"]
-    mydict = { "name": "John", "address": "Highway 37" }
-    x = mycol.insert_one(mydict)
-    print(x.inserted_id) 
-
     bot_client = MyClient(intents=intents)
     bot_client.run(TOKEN)
 

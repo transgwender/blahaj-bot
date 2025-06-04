@@ -21,6 +21,9 @@ def bot() -> None:
     TOKEN = file.read()
     file.close()
 
+    db_client = MongoClient('localhost', 27017)
+
     bot_client = MyClient(intents=intents)
+    bot_client.bot_init("0.0.3", logger, db_client)
     bot_client.run(TOKEN)
 

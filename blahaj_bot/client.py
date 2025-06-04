@@ -2,22 +2,26 @@
 
 import discord
 import logging
-import pymongo
 
-logger = logging.getLogger(__name__)
-version = "0.0.2"
 
-class MyClient(discord.Client, pymongo.MongoClient):
+class MyClient(discord.Client):
+
+    def bot_init(self, version, logger, db):
+        self.version = version
+        self.logger = logger
+        self.db = db
+
     async def on_ready(self):
-        logger.info(f'Logged on as {self.user}! - Version {version}')
-        mydb = self["discord"]
-        mycol = mydb["users"]
-        mydict = { "username": "John", "id": "111" }
+        self.logger.info(f'Logged on as {self.user}! - Version {self.version}')
+
+        mydb = self.db["discord"]
+        mycol = mydb["customers"]
+        mydict = { "name": "John", "address": "Highway 37" }
         x = mycol.insert_one(mydict)
         print(x.inserted_id) 
 
     async def on_message(self, message):
-        logger.info(f'Message from {message.author}: {message.content}')
+        self.logger.info(f'Message from {message.author}: {message.content}')
 
         if message.author == self.user:
             return
@@ -32,4 +36,4 @@ class MyClient(discord.Client, pymongo.MongoClient):
             await message.channel.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
 
         if message.content.startswith('$version'):
-            await message.channel.send(f'Version {version}')
+            await message.channel.send(f'Version {self.version}')

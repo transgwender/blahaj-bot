@@ -13,12 +13,6 @@ class MyClient(discord.Client):
     async def on_ready(self):
         self.logger.info(f'Logged on as {self.user}! - Version {self.version}')
 
-        mydb = self.db["discord"]
-        mycol = mydb["customers"]
-        mydict = { "name": "Bill", "address": "Road 69" }
-        x = mycol.insert_one(mydict)
-        self.logger.info(x.inserted_id)
-
     async def on_message(self, message):
         self.logger.info(f'Message from {message.author}: {message.content}')
 
@@ -38,6 +32,8 @@ class MyClient(discord.Client):
             await message.channel.send(f'Version {self.version}')
 
         if message.content.startswith('$role'):
-            self.db[message.guild]["roles"].insert_one({ "_id": 1, "role": "debug" })
-            self.logger.info(f'{message.guild} - {self.db[message.guild]["roles"].find()}')
+            serverdb = self.db[message.guild.id]
+            rolescol = serverdb["roles"]
+            rolescol.insert_one({ "_id": 1, "role": "debug" })
+            self.logger.info(f'{message.guild.name} - {rolescol.find()}')
             await message.channel.send('WIP')

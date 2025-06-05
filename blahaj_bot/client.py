@@ -32,7 +32,7 @@ class MyClient(discord.Client):
             await message.channel.send(f'Version {self.version}')
 
         if message.content.startswith('$role'):
-            serverdb = self.db[message.guild.id]
+            serverdb = self.db[str(message.guild.id)]
             rolescol = serverdb["roles"]
             rolescol.insert_one({ "_id": 1, "role": "debug" })
             self.logger.info(f'{message.guild.name} - {rolescol.find()}')

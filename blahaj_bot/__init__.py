@@ -1,4 +1,6 @@
 from blahaj_bot.client import MyClient
+from pymongo import MongoClient
+import importlib.metadata
 import discord
 import logging
 import sys
@@ -20,5 +22,11 @@ def bot() -> None:
     TOKEN = file.read()
     file.close()
 
-    client = MyClient(intents=intents)
-    client.run(TOKEN)
+    db_client = MongoClient('localhost', 27017)
+
+    version = importlib.metadata.version("blahaj-bot")
+
+    bot_client = MyClient(intents=intents)
+    bot_client.bot_init(version, logger, db_client)
+    bot_client.run(TOKEN)
+

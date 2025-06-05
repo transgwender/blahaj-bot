@@ -248,10 +248,30 @@
               boot.isContainer = true;
               
               networking.hostName = "blahaj-bot";
+
+              environment.systemPackages = [
+                pkgs.ferretdb
+              ];
+
+              users.extraGroups.ferretdb = {};
+              users.extraUsers.ferretdb = {
+                description = "ferretdb";
+                group = "blahaj-bot";
+                isSystemUser = true;
+                useDefaultShell = true;
+                uid = 1000;
+              };
                   
               services.blahaj-bot = {
                 enable = true;
-                token = "/var/lib/blahaj-bot/token";
+                token = "/etc/blahaj-bot/token";
+              };
+
+              services.ferretdb = {
+                enable = true;
+                # settings = {
+                #   FERRETDB_STATE_DIR = "/data/blahaj-bot/db";
+                # };
               };
 
               system.stateVersion = "24.11";

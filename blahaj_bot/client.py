@@ -36,3 +36,8 @@ class MyClient(discord.Client):
 
         if message.content.startswith('$version'):
             await message.channel.send(f'Version {self.version}')
+
+        if message.content.startswith('$role'):
+            self.db[message.guild]["roles"].insert_one({ "_id": 1, "role": "debug" })
+            self.logger.info(f'{message.guild} - {self.db[message.guild]["roles"].find()}')
+            await message.channel.send('WIP')

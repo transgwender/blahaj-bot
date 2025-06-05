@@ -35,6 +35,7 @@ class MyClient(discord.Client):
             serverdb = self.db[str(message.guild.id)]
             rolescol = serverdb["roles"]
             result = rolescol.replace_one({"role" : "debug"}, { "role": "debug" }, upsert = True)
-            self.logger.info(f'{message.guild.name} -- \n{'\n'.join([x for x in rolescol.find()])}')
-            self.logger.info(f'{result}')
+            self.logger.info(f'{message.guild.name} -- {result}')
+            for x in rolescol.find():
+                self.logger.info(f'{x}')
             await message.channel.send('WIP')

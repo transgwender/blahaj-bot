@@ -1,10 +1,14 @@
 [project]
 name = "blahaj-bot"
-version = "0.0.4"
-description = "Add your description here"
+version = "0.0.5"
+description = "Bot for Discord Servers"
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [
+  {name = "Gwendolyn Kornak", email = "gwen@gwenkornak.ca"},
+]
 dependencies = [
+    "backloggery",
     "discord>=2.3.2",
     "pymongo>=4.13.0",
     "urllib3>=2.2.3",
@@ -21,3 +25,6 @@ build-backend = "hatchling.build"
 dev = [
     "ruff>=0.6.7",
 ]
+
+[tool.uv.sources]
+backloggery = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api" }

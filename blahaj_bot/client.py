@@ -1,14 +1,13 @@
-# This example requires the 'message_content' intent.
-
 import discord
 
 
 class MyClient(discord.Client):
 
-    def bot_init(self, version, logger, db):
+    def bot_init(self, version, logger, db, backlog):
         self.version = version
         self.logger = logger
         self.db = db
+        self.backlog = backlog
 
     async def on_ready(self):
         self.logger.info(f'Logged on as {self.user}! - Version {self.version}')

@@ -24,11 +24,11 @@ build-backend = "hatchling.build"
 [tool.hatch.version]
 path = "blahaj_bot/__init__.py"
 
+[tool.uv.sources]
+backloggery = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api" }
+
 
 [dependency-groups]
 dev = [
     "ruff>=0.6.7",
 ]
-
-[tool.uv.sources]
-backloggery = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api" }

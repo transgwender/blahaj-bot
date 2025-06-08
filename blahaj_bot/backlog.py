@@ -17,7 +17,7 @@ def is_json(myjson):
   return True
 
 def create_game_embed(game: Game):
-    embed = discord.Embed(title=game.title)
+    embed = discord.Embed(title=game.title, description=game)
     return embed
 
 async def search_library(backlog: BacklogClient, message: Message, argv: List[str]):

@@ -115,7 +115,6 @@ dependencies = [
 
 [[package]]
 name = "blahaj-bot"
-version = "0.0.5"
 source = { editable = "." }
 dependencies = [
     { name = "backloggery" },

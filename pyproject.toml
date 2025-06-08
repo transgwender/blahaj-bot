@@ -1,12 +1,12 @@
 [project]
 name = "blahaj-bot"
-version = "0.0.5"
 description = "Bot for Discord Servers"
 readme = "README.md"
 requires-python = ">=3.13"
 authors = [
   {name = "Gwendolyn Kornak", email = "gwen@gwenkornak.ca"},
 ]
+dynamic = ["version"]
 dependencies = [
     "backloggery",
     "discord>=2.3.2",
@@ -20,6 +20,10 @@ bot = "blahaj_bot:bot"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "blahaj_bot/__init__.py"
+
 
 [dependency-groups]
 dev = [

@@ -5,22 +5,23 @@ from backloggery import Game, BacklogClient
 from discord import Intents
 from pymongo import MongoClient
 
+from blahaj_bot import __version__
+
 
 class MyClient(discord.Client):
 
     def __init__(self, *,
-                 version: str, logger: Logger,
+                 logger: Logger,
                  db: MongoClient[Mapping[str, Any]],
                  backlog: BacklogClient,
                  intents: Intents, **options: Any):
         super().__init__(intents=intents, **options)
-        self.version = version
         self.logger = logger
         self.db = db
         self.backlog = backlog
 
     async def on_ready(self):
-        self.logger.info(f'Logged on as {self.user}! - Version {self.version}')
+        self.logger.info(f'Logged on as {self.user}! - Version {__version__}')
 
     async def on_message(self, message):
         self.logger.info(f'Message from {message.author}: {message.content}')
@@ -38,7 +39,7 @@ class MyClient(discord.Client):
             await message.channel.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
 
         if message.content.startswith('$version'):
-            await message.channel.send(f'Version {self.version}')
+            await message.channel.send(f'Version {__version__}')
 
         if message.content.startswith('$role'):
             serverdb = self.db[str(message.guild.id)]

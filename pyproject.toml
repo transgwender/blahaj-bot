@@ -8,8 +8,9 @@ authors = [
 ]
 dynamic = ["version"]
 dependencies = [
+    "audioop-lts>=0.2.1",
     "backloggery",
-    "discord>=2.3.2",
+    "py-cord>=2.6.1",
     "pymongo>=4.13.0",
     "urllib3>=2.2.3",
 ]

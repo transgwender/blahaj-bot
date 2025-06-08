@@ -60,11 +60,30 @@
         # This is an additional overlay implementing build fixups.
         # See:
         # - https://pyproject-nix.github.io/uv2nix/FAQ.html
-        pyprojectOverrides = _final: _prev: {
+        pyprojectOverrides = final: prev:
           # Implement build fixups here.
           # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
           # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
-        };
+          let
+            inherit (final) resolveBuildSystem;
+            inherit (builtins) mapAttrs;
+
+            # Build system dependencies specified in the shape expected by resolveBuildSystem
+            # The empty lists below are lists of optional dependencies.
+            buildSystemOverrides = {
+              backloggery = {
+                hatchling = [ ];
+              };
+            };
+
+          in
+          mapAttrs (
+            name: spec:
+            prev.${name}.overrideAttrs (old: {
+              nativeBuildInputs = old.nativeBuildInputs ++ resolveBuildSystem spec;
+            })
+          ) buildSystemOverrides;
+
 
         # This example is only using x86_64-linux
         pkgs = import nixpkgs {

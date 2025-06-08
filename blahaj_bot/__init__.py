@@ -1,6 +1,14 @@
+"""
+Discord Bot
+"""
+
+__title__ = 'blahaj-bot'
+__author__ = 'transgwender'
+__version__ = '0.0.6'
+
 from blahaj_bot.client import MyClient
 from pymongo import MongoClient
-import importlib.metadata
+from backloggery import BacklogClient
 import discord
 import logging
 import sys
@@ -24,9 +32,8 @@ def bot() -> None:
 
     db_client = MongoClient('localhost', 27017)
 
-    version = importlib.metadata.version("blahaj-bot")
+    backlog_client = BacklogClient()
 
-    bot_client = MyClient(intents=intents)
-    bot_client.bot_init(version, logger, db_client)
+    bot_client = MyClient(db=db_client, backlog=backlog_client, intents=intents)
     bot_client.run(TOKEN)
 

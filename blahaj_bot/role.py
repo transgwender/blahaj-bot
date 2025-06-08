@@ -1,10 +1,12 @@
+import logging
 from typing import List
 
 from discord import Message
 from pymongo import MongoClient
-from logging import Logger
 
-async def command_role(message: Message, command: List[str], db: MongoClient, logger: Logger):
+logger = logging.getLogger(__name__)
+
+async def command_role(message: Message, command: List[str], db: MongoClient):
     serverdb = db[str(message.guild.id)]
     rolescol = serverdb["roles"]
     result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)

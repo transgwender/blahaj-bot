@@ -18,9 +18,23 @@ def is_json(myjson):
 
 def create_game_embed(game: Game):
     embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
-    for key, val in game.__dict__.items():
-        if val is not None:
-            embed.add_field(name=key, value=val)
+    if game.status is None:
+        embed.add_field(name="Status", value=game.status)
+    if game.priority is None:
+        embed.add_field(name="Priority", value=game.priority)
+    if game.platform_title is not None:
+        embed.add_field(name="Platform", value=game.platform_title)
+    if game.region is not None:
+        embed.add_field(name="Region", value=game.region)
+    if game.phys_digi is not None:
+        embed.add_field(name="Format", value=game.phys_digi)
+    if game.own is not None:
+        embed.add_field(name="Ownership", value=game.own)
+    if game.last_update is not None:
+        embed.add_field(name="Last Updated", value=game.last_update)
+    # for key, val in game.__dict__.items():
+    #     if val is not None:
+    #         embed.add_field(name=key, value=val)
     return embed
 
 async def search_library(backlog: BacklogClient, message: Message, argv: List[str]):

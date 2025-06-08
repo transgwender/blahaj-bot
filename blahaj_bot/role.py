@@ -6,7 +6,7 @@ from pymongo import MongoClient
 
 logger = logging.getLogger(__name__)
 
-async def command_role(message: Message, command: List[str], db: MongoClient):
+async def command_role(db: MongoClient, message: Message, argv: List[str]):
     serverdb = db[str(message.guild.id)]
     rolescol = serverdb["roles"]
     result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)

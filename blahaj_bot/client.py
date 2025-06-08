@@ -30,8 +30,8 @@ class MyClient(discord.Client):
         if message.author == self.user or not message.content.startswith('$'):
             return
 
-        incoming = message.content.replace('$', '').lower().strip().split()
-        command = incoming.pop(0)
+        argv = message.content.replace('$', '').lower().strip().split()
+        command = argv.pop(0)
 
         match command:
             case "hello":
@@ -43,8 +43,8 @@ class MyClient(discord.Client):
             case "version":
                 await message.channel.send(f'Version {__version__}')
             case "role":
-                await command_role(message, incoming, db=self.db)
-            case "backloggery":
-                await command_backlog(message, incoming, backlog=self.backlog)
+                await command_role(db=self.db, message=message, argv=argv)
+            case "backloggery" | "backlog":
+                await command_backlog(backlog=self.backlog, message=message, argv=argv)
             case _:
                 await message.channel.send('Unknown command')

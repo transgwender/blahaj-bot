@@ -1,16 +1,16 @@
 import logging
 from typing import List
 
-from discord import Message
+from discord.ext.commands import Context
 from pymongo import MongoClient
 
 logger = logging.getLogger(__name__)
 
-async def command_role(db: MongoClient, message: Message, argv: List[str]):
-    serverdb = db[str(message.guild.id)]
+async def command_role(db: MongoClient, ctx: Context, argv: List[str]):
+    serverdb = db[str(ctx.guild.id)]
     rolescol = serverdb["roles"]
     result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)
-    logger.info(f'{message.guild.name} -- {result}')
+    logger.info(f'{ctx.guild.name} -- {result}')
     for x in rolescol.find():
         logger.info(f'{x}')
-    await message.channel.send('WIP')
+    await ctx.send('WIP')

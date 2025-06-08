@@ -10,6 +10,7 @@ from blahaj_bot.client import MyClient
 from pymongo import MongoClient
 from backloggery import BacklogClient
 import discord
+from discord.ext import commands
 import logging
 import sys
 
@@ -34,6 +35,7 @@ def bot() -> None:
 
     backlog_client = BacklogClient()
 
-    bot_client = MyClient(db=db_client, backlog=backlog_client, intents=intents)
+    bot_client = MyClient(db=db_client, command_prefix=commands.when_mentioned_or("!"), backlog=backlog_client, intents=intents)
+
     bot_client.run(TOKEN)
 

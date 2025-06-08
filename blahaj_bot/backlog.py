@@ -3,8 +3,9 @@ import logging
 from typing import List
 from urllib.error import HTTPError
 
+import discord
 from discord import Message
-from backloggery import BacklogClient
+from backloggery import BacklogClient, Game
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,10 @@ def is_json(myjson):
   except ValueError as e:
     return False
   return True
+
+def create_game_embed(game: Game):
+    embed = discord.Embed(title=game.title)
+    return embed
 
 async def search_library(backlog: BacklogClient, message: Message, argv: List[str]):
     if len(argv) < 2:
@@ -33,7 +38,7 @@ async def search_library(backlog: BacklogClient, message: Message, argv: List[st
     if len(result) == 0:
         await message.channel.send("No results found")
         return
-    await message.channel.send(f'Results found: {len(result)} - First result: {result[0].title}')
+    await message.channel.send(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
 
 
 async def command_backlog(backlog: BacklogClient, message: Message, argv: List[str]):

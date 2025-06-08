@@ -17,7 +17,10 @@ def is_json(myjson):
   return True
 
 def create_game_embed(game: Game):
-    embed = discord.Embed(title=game.title, description=game)
+    embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
+    for (key, val) in game.__dict__:
+        if val is not None:
+            embed.add_field(name=key, value=val)
     return embed
 
 async def search_library(backlog: BacklogClient, message: Message, argv: List[str]):

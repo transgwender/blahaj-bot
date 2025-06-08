@@ -18,7 +18,7 @@ def is_json(myjson):
 
 def create_game_embed(game: Game):
     embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
-    for (key, val) in game.__dict__:
+    for key, val in game.__dict__.items():
         if val is not None:
             embed.add_field(name=key, value=val)
     return embed

@@ -29,7 +29,6 @@ def bot() -> None:
 
     backlog_client = BacklogClient()
 
-    bot_client = MyClient(intents=intents)
-    bot_client.bot_init(version, logger, db_client, backlog_client)
+    bot_client = MyClient(version=version, logger=logger, db=db_client, backlog=backlog_client, intents=intents)
     bot_client.run(TOKEN)
 

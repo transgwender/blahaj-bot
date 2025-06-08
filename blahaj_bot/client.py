@@ -1,9 +1,19 @@
 import discord
+from logging import Logger
+from typing import Any, Mapping
+from backloggery import Game, BacklogClient
+from discord import Intents
+from pymongo import MongoClient
 
 
 class MyClient(discord.Client):
 
-    def bot_init(self, version, logger, db, backlog):
+    def __init__(self, *,
+                 version: str, logger: Logger,
+                 db: MongoClient[Mapping[str, Any]],
+                 backlog: BacklogClient,
+                 intents: Intents, **options: Any):
+        super().__init__(intents=intents, **options)
         self.version = version
         self.logger = logger
         self.db = db

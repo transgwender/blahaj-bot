@@ -23,30 +23,15 @@ class MyClient(commands.Bot):
         super().__init__(command_prefix=command_prefix, intents=intents, **options)
         self.db = db
         self.backlog = backlog
+        self.load_extension('cogs.basic')
 
     async def on_ready(self):
         logger.info(f'Logged on as {self.user}! - Version {__version__}')
 
-    @super(__class__).command()
-    async def hello(self, ctx: commands.Context):
-        await ctx.send('Hello!')
-
-    @super(__class__).command()
-    async def pat(self, ctx: commands.Context):
-        await ctx.send('pat the pand')
-
-    @super(__class__).command()
-    async def github(self, ctx: commands.Context):
-        await ctx.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
-
-    @super(__class__).command()
-    async def version(self, ctx: commands.Context):
-        await ctx.send(f'Version {__version__}')
-
-    @super(__class__).command()
+    @commands.command()
     async def role(self, ctx: commands.Context, *, argv: List[str]):
         await command_role(db=self.db, ctx=ctx, argv=argv)
 
-    @super(__class__).command()
+    @commands.command()
     async def backlog(self, ctx: commands.Context, *, argv: List[str]):
         await command_backlog(backlog=self.backlog, ctx=ctx, argv=argv)

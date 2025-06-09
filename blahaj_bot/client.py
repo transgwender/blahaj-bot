@@ -27,26 +27,26 @@ class MyClient(commands.Bot):
     async def on_ready(self):
         logger.info(f'Logged on as {self.user}! - Version {__version__}')
 
-    @command()
+    @command(name="hello")
     async def hello(self, ctx: commands.Context):
         await ctx.send('Hello!')
 
-    @command()
+    @command(name="pat")
     async def pat(self, ctx: commands.Context):
         await ctx.send('pat the pand')
 
-    @command()
+    @command(name="github")
     async def github(self, ctx: commands.Context):
         await ctx.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
 
-    @command()
+    @command(name="version")
     async def version(self, ctx: commands.Context):
         await ctx.send(f'Version {__version__}')
 
-    @command()
+    @command(name="role")
     async def role(self, ctx: commands.Context, *, argv: List[str]):
         await command_role(db=self.db, ctx=ctx, argv=argv)
 
-    @command()
+    @command(name="backlog")
     async def backlog(self, ctx: commands.Context, *, argv: List[str]):
         await command_backlog(backlog=self.backlog, ctx=ctx, argv=argv)

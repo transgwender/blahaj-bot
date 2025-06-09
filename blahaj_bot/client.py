@@ -4,7 +4,7 @@ from discord.ext import commands
 
 from typing import Any, Mapping, List
 from backloggery import Game, BacklogClient
-from discord.ext.commands import command
+from discord.ext.commands import command, GroupMixin
 from pymongo import MongoClient
 
 from blahaj_bot import __version__
@@ -27,26 +27,26 @@ class MyClient(commands.Bot):
     async def on_ready(self):
         logger.info(f'Logged on as {self.user}! - Version {__version__}')
 
-    @command(name="hello")
+    @super().command()
     async def hello(self, ctx: commands.Context):
         await ctx.send('Hello!')
 
-    @command(name="pat")
+    @super().command()
     async def pat(self, ctx: commands.Context):
         await ctx.send('pat the pand')
 
-    @command(name="github")
+    @super().command()
     async def github(self, ctx: commands.Context):
         await ctx.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
 
-    @command(name="version")
+    @super().command()
     async def version(self, ctx: commands.Context):
         await ctx.send(f'Version {__version__}')
 
-    @command(name="role")
+    @super().command()
     async def role(self, ctx: commands.Context, *, argv: List[str]):
         await command_role(db=self.db, ctx=ctx, argv=argv)
 
-    @command(name="backlog")
+    @super().command()
     async def backlog(self, ctx: commands.Context, *, argv: List[str]):
         await command_backlog(backlog=self.backlog, ctx=ctx, argv=argv)

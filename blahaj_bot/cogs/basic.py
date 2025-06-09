@@ -1,11 +1,11 @@
-import discord
 from discord.ext import commands
 
-from blahaj_bot import __version__
+from blahaj_bot import __version__, BotClient
+
 
 class Basic(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: BotClient):
         self.bot = bot
 
     @commands.command()
@@ -24,5 +24,5 @@ class Basic(commands.Cog):
     async def version(self, ctx: commands.Context):
         await ctx.send(f'Version {__version__}')
 
-def setup(bot): # this is called by Pycord to setup the cog
-    bot.add_cog(Basic(bot)) # add the cog to the bot
+def setup(bot):
+    bot.add_cog(Basic(bot))

@@ -1,11 +1,12 @@
 import json
 import logging
-from typing import List
 from urllib.error import HTTPError
 
 import discord
-from discord.ext.commands import Context
-from backloggery import BacklogClient, Game
+from backloggery import Game
+from discord.ext import commands
+
+from blahaj_bot import BotClient
 
 logger = logging.getLogger(__name__)
 
@@ -37,35 +38,30 @@ def create_game_embed(game: Game):
     #         embed.add_field(name=key, value=val)
     return embed
 
-async def search_library(backlog: BacklogClient, ctx: Context, argv: List[str]):
-    if len(argv) < 2:
-        await ctx.send("Not enough arguments")
-        return
-    username = argv[0]
-    search = " ".join(argv[1:])
-    if not is_json(search):
-        await ctx.send("Invalid search syntax")
-        return
+class Backlog(commands.Cog):
 
-    try:
-        result = backlog.search_library(username=username, search_regex=search)
-    except HTTPError as e:
-        await ctx.send(f'HTTPError: {e}')
-        return
-    if len(result) == 0:
-        await ctx.send("No results found")
-        return
-    await ctx.send(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+    def __init__(self, bot: BotClient):
+        self.bot = bot
 
+    @commands.group(invoke_without_command=True)
+    async def backlog(self, ctx: commands.Context):
+        await ctx.send('Subcommand not found')
 
-async def command_backlog(backlog: BacklogClient, ctx: Context, argv: List[str]):
-    if len(argv) == 0:
-        await ctx.send("No subcommand specified")
-        return
-    subcommand = argv.pop(0)
+    @backlog.command()
+    async def search(self, ctx: commands.Context, username, *, search):
+        if not is_json(search):
+            await ctx.send("Invalid search syntax")
+            return
 
-    match subcommand:
-        case "search":
-            await search_library(backlog, ctx, argv)
-        case _:
-            await ctx.send("Unknown subcommand")
+        try:
+            result = self.bot.backlog.search_library(username=username, search_regex=search)
+        except HTTPError as e:
+            await ctx.send(f'HTTPError: {e}')
+            return
+        if len(result) == 0:
+            await ctx.send("No results found")
+            return
+        await ctx.send(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+
+def setup(bot):
+    bot.add_cog(Backlog(bot)) # add the cog to the bot

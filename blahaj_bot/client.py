@@ -23,7 +23,7 @@ class MyClient(commands.Bot):
         super().__init__(command_prefix=command_prefix, intents=intents, **options)
         self.db = db
         self.backlog = backlog
-        self.load_extension('cogs.basic')
+        super().load_extension('cogs.basic')
 
     async def on_ready(self):
         logger.info(f'Logged on as {self.user}! - Version {__version__}')

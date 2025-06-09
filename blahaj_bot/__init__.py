@@ -37,5 +37,9 @@ def bot() -> None:
 
     bot_client = MyClient(db=db_client, command_prefix=commands.when_mentioned_or("!"), backlog=backlog_client, intents=intents)
 
+    @bot_client.command()
+    async def echo(ctx: commands.Context, *, msg: str):
+        await ctx.send(msg)
+
     bot_client.run(TOKEN)
 

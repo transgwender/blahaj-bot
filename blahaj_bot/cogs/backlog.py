@@ -46,31 +46,25 @@ class Backlog(commands.Cog):
 
     backlog = SlashCommandGroup("backlog", "Unofficial Backloggery Integration")
 
-    search_backlog = backlog.create_subgroup("search", "Search Backloggery")
+    search_backlog = backlog.create_subgroup("search", "Search Backlog")
 
-    @search_backlog.command()
-    @discord.option("username", description="Username to search")
-    @discord.option("search", description="Search query")
-    async def search(self, ctx: discord.ApplicationContext, username, *, search):
+    @search_backlog.command(description="Advanced search")
+    @discord.option("username", description="Username to search", type=str)
+    @discord.option("search", description="Search query in raw json", type=str)
+    async def advanced(self, ctx: discord.ApplicationContext, username, *, search):
         if not is_json(search):
-            await ctx.send("Invalid search syntax")
+            await ctx.respond("Invalid search syntax")
             return
 
         try:
             result = self.bot.backlog.search_library(username=username, search_regex=search)
         except HTTPError as e:
-            await ctx.send(f'HTTPError: {e}')
+            await ctx.respond(f'HTTPError: {e}')
             return
         if len(result) == 0:
-            await ctx.send("No results found")
+            await ctx.respond("No results found")
             return
-        await ctx.send(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
-
-    @commands.Cog.listener()
-    async def on_application_command_error(self, ctx: discord.ApplicationContext, error: discord.DiscordException):
-        # if isinstance(error, commands.MissingRequiredArgument):
-        #     await ctx.send("Unknown command.")
-        await ctx.send(f'An error occurred: {error}')
+        await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
 
 def setup(bot):
     bot.add_cog(Backlog(bot)) # add the cog to the bot

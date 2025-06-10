@@ -4,7 +4,7 @@ Discord Bot
 
 __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 
 from blahaj_bot.client import BotClient
 from pymongo import MongoClient

@@ -49,7 +49,9 @@ class Backlog(commands.Cog):
     search_backlog = backlog.create_subgroup("search", "Search Backloggery")
 
     @search_backlog.command()
-    async def search(self, ctx: commands.Context, username, *, search):
+    @discord.option("username", description="Username to search")
+    @discord.option("search", description="Search query")
+    async def search(self, ctx: discord.ApplicationContext, username, *, search):
         if not is_json(search):
             await ctx.send("Invalid search syntax")
             return

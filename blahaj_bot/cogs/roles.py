@@ -1,5 +1,7 @@
 import logging
 
+import discord
+from discord import SlashCommandGroup
 from discord.ext import commands
 
 from blahaj_bot import BotClient
@@ -11,8 +13,10 @@ class Roles(commands.Cog):
     def __init__(self, bot: BotClient):
         self.bot = bot
 
-    @commands.command()
-    async def role(self, ctx: commands.Context):
+    role = SlashCommandGroup("role", "Role Management")
+
+    @role.command(description="WIP")
+    async def debug(self, ctx: commands.Context):
         serverdb = self.bot.db[str(ctx.guild.id)]
         rolescol = serverdb["roles"]
         result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)

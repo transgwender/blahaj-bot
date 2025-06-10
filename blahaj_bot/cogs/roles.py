@@ -16,7 +16,7 @@ class Roles(commands.Cog):
     role = SlashCommandGroup("role", "Role Management")
 
     @role.command(description="WIP")
-    async def debug(self, ctx: commands.Context):
+    async def debug(self, ctx: discord.ApplicationContext):
         serverdb = self.bot.db[str(ctx.guild.id)]
         rolescol = serverdb["roles"]
         result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)

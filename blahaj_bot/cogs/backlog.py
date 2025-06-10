@@ -65,6 +65,8 @@ class Backlog(commands.Cog):
             await ctx.respond("No results found")
             return
 
+        if len(result) > 1000:
+            await ctx.respond("More than 1000 results found, showing subset of results")
         res = list(map(create_game_embed, result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
@@ -86,6 +88,8 @@ class Backlog(commands.Cog):
             await ctx.respond("No results found")
             return
 
+        if len(result) > 1000:
+            await ctx.respond("More than 1000 results found, showing subset of results")
         res = list(map(create_game_embed, result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)

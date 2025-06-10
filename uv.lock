@@ -3,6 +3,14 @@ revision = 2
 requires-python = ">=3.13"
 
 [[package]]
+name = "aenum"
+version = "3.1.16"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/52/6ad8f63ec8da1bf40f96996d25d5b650fdd38f5975f8c813732c47388f18/aenum-3.1.16-py3-none-any.whl", hash = "sha256:9035092855a98e41b66e3d0998bd7b96280e85ceb3a04cc035636138a1943eaf", size = 165627, upload-time = "2025-04-25T03:17:58.89Z" },
+]
+
+[[package]]
 name = "aiohappyeyeballs"
 version = "2.6.1"
 source = { registry = "https://pypi.org/simple" }
@@ -108,9 +116,10 @@ wheels = [
 
 [[package]]
 name = "backloggery"
-version = "0.0.4"
-source = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api#29db74c8b13a260c6748938397332b2d8edd37cc" }
+version = "0.0.6"
+source = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api#a15a89d82db0869e4248d390dd1c9273d20ac54b" }
 dependencies = [
+    { name = "aenum" },
     { name = "hatchling" },
 ]
 

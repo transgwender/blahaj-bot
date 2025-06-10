@@ -64,9 +64,8 @@ class Backlog(commands.Cog):
         if len(result) == 0:
             await ctx.respond("No results found")
             return
-        # await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
 
-        res = list(map(create_game_embed, result))
+        res = list(map(create_game_embed, result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 
@@ -86,9 +85,8 @@ class Backlog(commands.Cog):
         if len(result) == 0:
             await ctx.respond("No results found")
             return
-        # await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
 
-        res = list(map(create_game_embed, result))
+        res = list(map(create_game_embed, result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 

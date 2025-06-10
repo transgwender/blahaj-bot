@@ -22,7 +22,6 @@ class BotClient(commands.Bot):
         super().load_extension('blahaj_bot.cogs.basic')
         super().load_extension('blahaj_bot.cogs.roles')
         super().load_extension('blahaj_bot.cogs.backlog')
-        super().load_extension('blahaj_bot.cogs.paginator')
         logger.info(f'Cogs initialized')
 
         self.db = db

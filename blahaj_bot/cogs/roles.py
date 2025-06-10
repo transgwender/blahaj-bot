@@ -23,7 +23,7 @@ class Roles(commands.Cog):
         logger.info(f'{ctx.guild.name} -- {result}')
         for x in rolescol.find():
             logger.info(f'{x}')
-        await ctx.send('WIP')
+        await ctx.respond('WIP')
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

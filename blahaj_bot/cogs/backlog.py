@@ -48,8 +48,26 @@ class Backlog(commands.Cog):
 
     search_backlog = backlog.create_subgroup("search", "Search Backlog")
 
+    @search_backlog.command(description="Basic search")
+    @discord.option("username", description="Username", input_type=str)
+    @discord.option("title", description="Title", input_type=str, required=False)
+    @discord.option("abbr", description="Console abbreviation", input_type=str, required=False)
+    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr):
+        search = json.dumps({"abbr": f'(?i)^.*{abbr}.*$' if abbr is not None else '',
+                             "title": f'(?i)^.*{title}.*$' if title is not None else ''})
+
+        try:
+            result = self.bot.backlog.search_library(username=username, search_regex=search)
+        except HTTPError as e:
+            await ctx.respond(f'HTTPError: {e}')
+            return
+        if len(result) == 0:
+            await ctx.respond("No results found")
+            return
+        await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+
     @search_backlog.command(description="Advanced search")
-    @discord.option("username", description="Username to search", input_type=str)
+    @discord.option("username", description="Username", input_type=str)
     @discord.option("search", description="Search query in raw json", input_type=str, default="{}")
     async def advanced(self, ctx: discord.ApplicationContext, username, *, search):
         if not is_json(search):

@@ -49,8 +49,8 @@ class Backlog(commands.Cog):
     search_backlog = backlog.create_subgroup("search", "Search Backlog")
 
     @search_backlog.command(description="Advanced search")
-    @discord.option("username", description="Username to search", type=str)
-    @discord.option("search", description="Search query in raw json", type=str)
+    @discord.option("username", description="Username to search", input_type=str)
+    @discord.option("search", description="Search query in raw json", input_type=str, default="{}")
     async def advanced(self, ctx: discord.ApplicationContext, username, *, search):
         if not is_json(search):
             await ctx.respond("Invalid search syntax")

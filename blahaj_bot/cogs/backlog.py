@@ -63,5 +63,11 @@ class Backlog(commands.Cog):
             return
         await ctx.send(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
 
+    @commands.Cog.listener()
+    async def on_application_command_error(self, ctx: discord.ApplicationContext, error: discord.DiscordException):
+        # if isinstance(error, commands.MissingRequiredArgument):
+        #     await ctx.send("Unknown command.")
+        await ctx.send(f'An error occurred: {error}')
+
 def setup(bot):
     bot.add_cog(Backlog(bot)) # add the cog to the bot

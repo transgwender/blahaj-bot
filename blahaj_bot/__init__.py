@@ -4,12 +4,13 @@ Discord Bot
 
 __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
-from blahaj_bot.client import MyClient
+from blahaj_bot.client import BotClient
 from pymongo import MongoClient
 from backloggery import BacklogClient
 import discord
+from discord.ext import commands
 import logging
 import sys
 
@@ -34,6 +35,11 @@ def bot() -> None:
 
     backlog_client = BacklogClient()
 
-    bot_client = MyClient(db=db_client, backlog=backlog_client, intents=intents)
+    bot_client = BotClient(db=db_client, command_prefix=commands.when_mentioned_or("$"), backlog=backlog_client, intents=intents)
+
+    @bot_client.command()
+    async def echo(ctx: commands.Context, *, msg: str):
+        await ctx.send(msg)
+
     bot_client.run(TOKEN)
 

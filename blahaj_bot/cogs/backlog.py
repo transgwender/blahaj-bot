@@ -5,7 +5,7 @@ from urllib.error import HTTPError
 import discord
 from backloggery import Game
 from discord import SlashCommand, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 
 from blahaj_bot import BotClient
 
@@ -64,7 +64,11 @@ class Backlog(commands.Cog):
         if len(result) == 0:
             await ctx.respond("No results found")
             return
-        await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+        # await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+
+        res = list(map(create_game_embed, result))
+        paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
+        await paginator.respond(ctx.interaction, ephemeral=False)
 
     @search_backlog.command(description="Advanced search")
     @discord.option("username", description="Username", input_type=str)
@@ -82,7 +86,11 @@ class Backlog(commands.Cog):
         if len(result) == 0:
             await ctx.respond("No results found")
             return
-        await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+        # await ctx.respond(f'Results found: {len(result)}', embed=create_game_embed(result[0]))
+
+        res = list(map(create_game_embed, result))
+        paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
+        await paginator.respond(ctx.interaction, ephemeral=False)
 
 def setup(bot):
     bot.add_cog(Backlog(bot)) # add the cog to the bot

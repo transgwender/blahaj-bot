@@ -4,6 +4,7 @@ from urllib.error import HTTPError
 
 import discord
 from backloggery import Game
+from discord import SlashCommand, SlashCommandGroup
 from discord.ext import commands
 
 from blahaj_bot import BotClient
@@ -43,11 +44,11 @@ class Backlog(commands.Cog):
     def __init__(self, bot: BotClient):
         self.bot = bot
 
-    @commands.group(invoke_without_command=True)
-    async def backlog(self, ctx: commands.Context):
-        await ctx.send('Subcommand not found')
+    backlog = SlashCommandGroup("backlog", "Unofficial Backloggery Integration")
 
-    @backlog.command()
+    search_backlog = backlog.create_subgroup("search", "Search Backloggery")
+
+    @search_backlog.command()
     async def search(self, ctx: commands.Context, username, *, search):
         if not is_json(search):
             await ctx.send("Invalid search syntax")

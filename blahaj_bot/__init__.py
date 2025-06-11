@@ -6,6 +6,9 @@ __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
 __version__ = '0.0.9'
 
+import time
+import aiohttp
+
 from blahaj_bot.client import BotClient
 from pymongo import MongoClient
 from backloggery import BacklogClient
@@ -37,9 +40,11 @@ def bot() -> None:
 
     bot_client = BotClient(db=db_client, command_prefix=commands.when_mentioned_or("$"), backlog=backlog_client, intents=intents)
 
-    @bot_client.command()
-    async def echo(ctx: commands.Context, *, msg: str):
-        await ctx.send(msg)
-
-    bot_client.run(TOKEN)
+    for i in range(3, 100):
+        try:
+            bot_client.run(TOKEN)
+        except aiohttp.ClientConnectorError:
+            time.sleep(i)
+        else:
+            break
 

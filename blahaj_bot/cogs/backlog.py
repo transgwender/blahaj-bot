@@ -35,7 +35,7 @@ def create_game_embed(timestamp: datetime, game: Game):
         embed.add_field(name="Ownership", value=str(game.own))
     if game.last_update is not None:
         embed.add_field(name="Last Updated", value=game.last_update)
-    embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y/%m/%d %H:%M:%S")} - {timestamp.tzname()}')
+    embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
     # for key, val in game.__dict__.items():
     #     if val is not None:
     #         embed.add_field(name=key, value=val)

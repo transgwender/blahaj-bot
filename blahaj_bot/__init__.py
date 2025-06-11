@@ -4,7 +4,7 @@ Discord Bot
 
 __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
-__version__ = '0.0.9'
+__version__ = '0.0.10'
 
 import time
 import aiohttp
@@ -44,7 +44,7 @@ def bot() -> None:
         try:
             bot_client.run(TOKEN)
         except aiohttp.ClientConnectorError:
+            logger.warning(f'Failed to connect, retrying in {i} seconds...')
             time.sleep(i)
         else:
             break
-

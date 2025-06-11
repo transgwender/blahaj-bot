@@ -117,7 +117,7 @@ wheels = [
 [[package]]
 name = "backloggery"
 version = "0.1.0"
-source = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api#55f1b744742f01ca8a2a74138dd2dc58f48108b0" }
+source = { git = "https://github.com/transgwender/UNOFFICIAL-backloggery-api#625cddcc3393fa706e738785c724c56fbe7ff159" }
 dependencies = [
     { name = "aenum" },
     { name = "hatchling" },

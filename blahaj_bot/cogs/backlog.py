@@ -26,8 +26,8 @@ def create_game_embed(timestamp: datetime, game: Game):
         embed.add_field(name="Priority", value=str(game.priority))
     if game.platform_title is not None:
         embed.add_field(name="Platform", value=game.platform_title)
-    if game.subplatform_tile is not None:
-        embed.add_field(name="Sub-Platform", value=game.subplatform_title)
+    if game.sub_platform_title is not None:
+        embed.add_field(name="Sub-Platform", value=game.sub_platform_title)
     if game.region is not None:
         embed.add_field(name="Region", value=str(game.region))
     if game.phys_digi is not None:

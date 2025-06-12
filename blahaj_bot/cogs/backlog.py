@@ -1,11 +1,10 @@
 import json
 import logging
 from datetime import datetime
-from urllib.error import HTTPError
 
 import discord
 from backloggery import Game, NoDataFoundError
-from discord import SlashCommand, SlashCommandGroup
+from discord import SlashCommandGroup
 from discord.ext import commands, pages
 
 from blahaj_bot import BotClient
@@ -27,18 +26,25 @@ def create_game_embed(timestamp: datetime, game: Game):
         embed.add_field(name="Priority", value=str(game.priority))
     if game.platform_title is not None:
         embed.add_field(name="Platform", value=game.platform_title)
+    if game.subplatform_tile is not None:
+        embed.add_field(name="Sub-Platform", value=game.subplatform_title)
     if game.region is not None:
         embed.add_field(name="Region", value=str(game.region))
     if game.phys_digi is not None:
         embed.add_field(name="Format", value=str(game.phys_digi))
     if game.own is not None:
         embed.add_field(name="Ownership", value=str(game.own))
+    if game.achieve_score is not None and game.achieve_total is not None and game.achieve_total > 0:
+        embed.add_field(name="Achievements", value=f"{game.achieve_score}/{game.achieve_total}")
     if game.last_update is not None:
         embed.add_field(name="Last Updated", value=game.last_update)
     embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
-    # for key, val in game.__dict__.items():
-    #     if val is not None:
-    #         embed.add_field(name=key, value=val)
+
+    if game.has_review: # TODO: Review grab and embed
+        review_embed = discord.Embed(title="Review")
+        if game.rating is not None:
+            review_embed.add_field(name="Rating", value=str(game.rating))
+        return [embed, review_embed]
     return embed
 
 class Backlog(commands.Cog):

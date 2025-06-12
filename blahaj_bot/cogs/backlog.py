@@ -1,10 +1,10 @@
 import json
 import logging
-from urllib.error import HTTPError
+from datetime import datetime
 
 import discord
-from backloggery import Game
-from discord import SlashCommand, SlashCommandGroup
+from backloggery import Game, NoDataFoundError
+from discord import SlashCommandGroup
 from discord.ext import commands, pages
 
 from blahaj_bot import BotClient
@@ -18,7 +18,7 @@ def is_json(myjson):
     return False
   return True
 
-def create_game_embed(game: Game):
+def create_game_embed(timestamp: datetime, game: Game):
     embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
     if game.status is not None:
         embed.add_field(name="Status", value=str(game.status))
@@ -26,17 +26,25 @@ def create_game_embed(game: Game):
         embed.add_field(name="Priority", value=str(game.priority))
     if game.platform_title is not None:
         embed.add_field(name="Platform", value=game.platform_title)
+    if game.sub_platform_title is not None:
+        embed.add_field(name="Sub-Platform", value=game.sub_platform_title)
     if game.region is not None:
         embed.add_field(name="Region", value=str(game.region))
     if game.phys_digi is not None:
         embed.add_field(name="Format", value=str(game.phys_digi))
     if game.own is not None:
         embed.add_field(name="Ownership", value=str(game.own))
+    if game.achieve_score is not None and game.achieve_total is not None and game.achieve_total > 0:
+        embed.add_field(name="Achievements", value=f"{game.achieve_score}/{game.achieve_total}")
     if game.last_update is not None:
         embed.add_field(name="Last Updated", value=game.last_update)
-    # for key, val in game.__dict__.items():
-    #     if val is not None:
-    #         embed.add_field(name=key, value=val)
+    embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
+
+    if game.has_review: # TODO: Review grab and embed
+        review_embed = discord.Embed(title="Review")
+        if game.rating is not None:
+            review_embed.add_field(name="Rating", value=str(game.rating))
+        return [embed, review_embed]
     return embed
 
 class Backlog(commands.Cog):
@@ -57,9 +65,9 @@ class Backlog(commands.Cog):
                              "title": f'(?i)^.*{title}.*$' if title is not None else ''})
 
         try:
-            result = self.bot.backlog.search_library(username=username, search_regex=search)
-        except HTTPError as e:
-            await ctx.respond(f'HTTPError: {e}')
+            timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)
+        except NoDataFoundError as e:
+            await ctx.respond(f'NoDataFoundError: {e}')
             return
         if len(result) == 0:
             await ctx.respond("No results found")
@@ -67,7 +75,7 @@ class Backlog(commands.Cog):
 
         if len(result) > 1000:
             await ctx.respond("More than 1000 results found, showing subset of results")
-        res = list(map(create_game_embed, result[:1000]))
+        res = list(map(lambda game : create_game_embed(timestamp, game), result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 
@@ -80,9 +88,9 @@ class Backlog(commands.Cog):
             return
 
         try:
-            result = self.bot.backlog.search_library(username=username, search_regex=search)
-        except HTTPError as e:
-            await ctx.respond(f'HTTPError: {e}')
+            timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)
+        except NoDataFoundError as e:
+            await ctx.respond(f'NoDataFoundError: {e}')
             return
         if len(result) == 0:
             await ctx.respond("No results found")
@@ -90,7 +98,7 @@ class Backlog(commands.Cog):
 
         if len(result) > 1000:
             await ctx.respond("More than 1000 results found, showing subset of results")
-        res = list(map(create_game_embed, result[:1000]))
+        res = list(map(lambda game : create_game_embed(timestamp, game), result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 

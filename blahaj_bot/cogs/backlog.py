@@ -38,7 +38,7 @@ def create_game_embed(timestamp: datetime, game: Game):
     if game.achieve_score is not None and game.achieve_total is not None and game.achieve_total > 0:
         embed.add_field(name="Achievements", value=f"{game.achieve_score}/{game.achieve_total}")
     if game.last_update is not None and str(game.last_update) is not "":
-        embed.add_field(name="Last Updated", value=game.last_update)
+        embed.add_field(name="Last Updated", value=game.last_update, inline=False)
     embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
 
     if game.has_review: # TODO: Review grab and embed

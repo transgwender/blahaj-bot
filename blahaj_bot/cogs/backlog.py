@@ -70,7 +70,8 @@ class Backlog(commands.Cog):
     @discord.option("region", description="Region", input_type=Region, required=False)
     @discord.option("format", description="Format", input_type=PhysDigi, required=False)
     @discord.option("ownership", description="Ownership", input_type=Own, required=False)
-    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr, status, priority, platform, region, format, ownership):
+    @discord.option("has_review", description="Has Review", input_type=bool, required=False)
+    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr, status, priority, platform, region, format, ownership, has_review):
         search = json.dumps({"title": f'(?i)^.*{title}.*$' if title is not None else '',
                              "abbr": f'(?i)^.*{abbr}.*$' if abbr is not None else '',
                              "platform_title": f'(?i)^.*{platform}.*$' if platform is not None else '',
@@ -78,7 +79,8 @@ class Backlog(commands.Cog):
                              "priority": f'(?i)^.*{str(priority)}.*$' if priority is not None else '',
                              "region": f'(?i)^.*{str(region)}.*$' if region is not None else '',
                              "phys_digi": f'(?i)^.*{str(format)}.*$' if format is not None else '',
-                             "own": f'(?i)^.*{str(ownership)}.*$' if ownership is not None else '',})
+                             "own": f'(?i)^.*{str(ownership)}.*$' if ownership is not None else '',
+                             "has_review": '1' if has_review is True else '0',})
 
         logger.info(search)
 

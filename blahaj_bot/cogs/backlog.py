@@ -4,6 +4,7 @@ from datetime import datetime
 
 import discord
 from backloggery import Game, NoDataFoundError
+from backloggery.enums import Status
 from discord import SlashCommandGroup
 from discord.ext import commands, pages
 
@@ -60,9 +61,11 @@ class Backlog(commands.Cog):
     @discord.option("username", description="Username", input_type=str)
     @discord.option("title", description="Title", input_type=str, required=False)
     @discord.option("abbr", description="Console abbreviation", input_type=str, required=False)
-    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr):
+    @discord.option("status", description="Status", input_type=Status, required=False)
+    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr, status):
         search = json.dumps({"abbr": f'(?i)^.*{abbr}.*$' if abbr is not None else '',
-                             "title": f'(?i)^.*{title}.*$' if title is not None else ''})
+                             "title": f'(?i)^.*{title}.*$' if title is not None else '',
+                             "status": f'(?i)^.*{status}.*$' if status is not None else '',})
 
         try:
             timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)

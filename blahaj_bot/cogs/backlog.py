@@ -3,8 +3,8 @@ import logging
 from datetime import datetime
 
 import discord
-from backloggery import Game, NoDataFoundError
-from backloggery.enums import Status
+from backloggery import Game, NoDataFoundError, Priority, Region, PhysDigi
+from backloggery.enums import Status, Own
 from discord import SlashCommandGroup
 from discord.ext import commands, pages
 
@@ -61,11 +61,21 @@ class Backlog(commands.Cog):
     @discord.option("username", description="Username", input_type=str)
     @discord.option("title", description="Title", input_type=str, required=False)
     @discord.option("abbr", description="Console abbreviation", input_type=str, required=False)
+    @discord.option("platform", description="Platform", input_type=str, required=False)
     @discord.option("status", description="Status", input_type=Status, required=False)
-    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr, status):
-        search = json.dumps({"abbr": f'(?i)^.*{abbr}.*$' if abbr is not None else '',
-                             "title": f'(?i)^.*{title}.*$' if title is not None else '',
-                             "status": f'(?i)^.*{status}.*$' if status is not None else '',})
+    @discord.option("priority", description="Priority", input_type=Priority, required=False)
+    @discord.option("region", description="Region", input_type=Region, required=False)
+    @discord.option("format", description="Format", input_type=PhysDigi, required=False)
+    @discord.option("ownership", description="Ownership", input_type=Own, required=False)
+    async def basic(self, ctx: discord.ApplicationContext, username, title, abbr, status, priority, platform, region, format, ownership):
+        search = json.dumps({"title": f'(?i)^.*{title}.*$' if title is not None else '',
+                             "abbr": f'(?i)^.*{abbr}.*$' if abbr is not None else '',
+                             "platform_title": f'(?i)^.*{platform}.*$' if platform is not None else '',
+                             "status": f'(?i)^.*{str(status)}.*$' if status is not None else '',
+                             "priority": f'(?i)^.*{str(priority)}.*$' if priority is not None else '',
+                             "region": f'(?i)^.*{str(region)}.*$' if region is not None else '',
+                             "phys_digi": f'(?i)^.*{str(format)}.*$' if format is not None else '',
+                             "own": f'(?i)^.*{str(ownership)}.*$' if ownership is not None else '',})
 
         try:
             timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)

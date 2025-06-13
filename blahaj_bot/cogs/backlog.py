@@ -77,7 +77,7 @@ class Backlog(commands.Cog):
                              "phys_digi": f'(?i)^.*{str(format)}.*$' if format is not None else '',
                              "own": f'(?i)^.*{str(ownership)}.*$' if ownership is not None else '',})
 
-        logger.debug(search)
+        logger.info(search)
 
         try:
             timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)

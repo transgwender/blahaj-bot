@@ -21,23 +21,23 @@ def is_json(myjson):
 
 def create_game_embed(timestamp: datetime, game: Game):
     embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
-    if game.status is not None:
+    if game.status is not None and str(game.status) is not "":
         embed.add_field(name="Status", value=str(game.status))
-    if game.priority is not None:
+    if game.priority is not None and str(game.priority) is not "":
         embed.add_field(name="Priority", value=str(game.priority))
-    if game.platform_title is not None:
+    if game.platform_title is not None and str(game.platform_title) is not "":
         embed.add_field(name="Platform", value=game.platform_title)
-    if game.sub_platform_title is not None:
+    if game.sub_platform_title is not None and str(game.sub_platform_title) is not "":
         embed.add_field(name="Sub-Platform", value=game.sub_platform_title)
-    if game.region is not None:
+    if game.region is not None and str(game.region) is not "":
         embed.add_field(name="Region", value=str(game.region))
-    if game.phys_digi is not None:
+    if game.phys_digi is not None and str(game.phys_digi) is not "":
         embed.add_field(name="Format", value=str(game.phys_digi))
-    if game.own is not None:
+    if game.own is not None and str(game.own) is not "":
         embed.add_field(name="Ownership", value=str(game.own))
     if game.achieve_score is not None and game.achieve_total is not None and game.achieve_total > 0:
         embed.add_field(name="Achievements", value=f"{game.achieve_score}/{game.achieve_total}")
-    if game.last_update is not None:
+    if game.last_update is not None and str(game.last_update) is not "":
         embed.add_field(name="Last Updated", value=game.last_update)
     embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
 

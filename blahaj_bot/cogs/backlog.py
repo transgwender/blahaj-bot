@@ -93,9 +93,14 @@ class Backlog(commands.Cog):
             await ctx.respond("No results found")
             return
 
-        if len(result) > 1000:
-            await ctx.respond("More than 1000 results found, showing subset of results")
-        res = list(map(lambda game : create_game_embed(timestamp, self.bot.backlog, game), result[:1000]))
+        if has_review:
+            if len(result) > 50:
+                await ctx.respond("More than 50 results with reviews found, showing subset of results")
+            res = list(map(lambda game: create_game_embed(timestamp, self.bot.backlog, game), result[:50]))
+        else:
+            if len(result) > 1000:
+                await ctx.respond("More than 1000 results found, showing subset of results")
+            res = list(map(lambda game : create_game_embed(timestamp, self.bot.backlog, game), result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 

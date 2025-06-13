@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime
+from urllib.error import HTTPError
 
 import discord
 from backloggery import Game, NoDataFoundError, Priority, Region, PhysDigi
@@ -84,6 +85,9 @@ class Backlog(commands.Cog):
         except NoDataFoundError as e:
             await ctx.respond(f'NoDataFoundError: {e}')
             return
+        except HTTPError as e:
+            await ctx.respond(f'HTTPError: {e}')
+            return
         if len(result) == 0:
             await ctx.respond("No results found")
             return
@@ -106,6 +110,9 @@ class Backlog(commands.Cog):
             timestamp, result = self.bot.backlog.search_library(username=username, search_regex=search)
         except NoDataFoundError as e:
             await ctx.respond(f'NoDataFoundError: {e}')
+            return
+        except HTTPError as e:
+            await ctx.respond(f'HTTPError: {e}')
             return
         if len(result) == 0:
             await ctx.respond("No results found")

@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 
 import discord
-from backloggery import Game, NoDataFoundError, Priority, Region, PhysDigi
+from backloggery import Game, NoDataFoundError, Priority, Region, PhysDigi, BacklogClient
 from backloggery.enums import Status, Own
 from discord import SlashCommandGroup
 from discord.ext import commands, pages
@@ -19,7 +19,7 @@ def is_json(myjson):
     return False
   return True
 
-def create_game_embed(timestamp: datetime, game: Game):
+def create_game_embed(timestamp: datetime, backlog: BacklogClient, game: Game):
     embed = discord.Embed(title=game.title, description="" if game.notes is None else game.notes)
     if game.status is not None and str(game.status) is not "":
         embed.add_field(name="Status", value=str(game.status))
@@ -41,10 +41,13 @@ def create_game_embed(timestamp: datetime, game: Game):
         embed.add_field(name="Last Updated", value=game.last_update, inline=False)
     embed.set_footer(text=f'Last fetched: {timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {timestamp.tzname()}')
 
-    if game.has_review: # TODO: Review grab and embed
-        review_embed = discord.Embed(title="Review")
-        if game.rating is not None:
+    if game.has_review:
+        game = backlog.get_game(game.game_inst_id)
+        review_embed = discord.Embed(title="Review", description="" if game.review is None else game.review)
+        if game.rating is not None and str(game.rating) is not "":
             review_embed.add_field(name="Rating", value=str(game.rating))
+        if game.difficulty is not None and str(game.difficulty) is not "":
+            review_embed.add_field(name="Difficulty", value=str(game.difficulty))
         return [embed, review_embed]
     return embed
 
@@ -90,7 +93,7 @@ class Backlog(commands.Cog):
 
         if len(result) > 1000:
             await ctx.respond("More than 1000 results found, showing subset of results")
-        res = list(map(lambda game : create_game_embed(timestamp, game), result[:1000]))
+        res = list(map(lambda game : create_game_embed(timestamp, self.bot.backlog, game), result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 
@@ -113,7 +116,7 @@ class Backlog(commands.Cog):
 
         if len(result) > 1000:
             await ctx.respond("More than 1000 results found, showing subset of results")
-        res = list(map(lambda game : create_game_embed(timestamp, game), result[:1000]))
+        res = list(map(lambda game : create_game_embed(timestamp, self.bot.backlog, game), result[:1000]))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
 

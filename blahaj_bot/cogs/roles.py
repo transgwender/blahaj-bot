@@ -27,14 +27,14 @@ class AddRoleView(discord.ui.View):
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
         if isinstance(reaction.emoji, str):
-            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None, delete_after=60)
+            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
             await self.msg.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None or not e.is_usable():
-                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None, delete_after=60)
+                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
             else:
-                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None, delete_after=60)
+                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
                 await self.msg.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
@@ -56,7 +56,7 @@ class Roles(commands.Cog):
 
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
-        await ctx.respond("Add Role", view=AddRoleView(self.bot, message))
+        await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60)
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

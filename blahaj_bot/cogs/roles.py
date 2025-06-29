@@ -29,8 +29,7 @@ class MyView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
-        await interaction.response.edit_message(f"Role selected: {select.values[0]}."
-                                                f"React to this message to select associated emoji.")
+        await interaction.response.edit_message(f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.")
         # await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
 class Roles(commands.Cog):

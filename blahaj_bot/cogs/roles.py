@@ -41,12 +41,15 @@ class MyView(discord.ui.View):
 
         if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
+            await interaction.message.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None:
                 await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
             else:
                 await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {e}, id: {e.id}, is_usable: {e.is_usable()}")
+                if e.is_usable():
+                    await interaction.message.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
 

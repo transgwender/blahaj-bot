@@ -1,27 +1,14 @@
 import logging
 
 import discord
-from discord import SlashCommandGroup, MessageCommand, Emoji, PartialEmoji, Message
+from discord import SlashCommandGroup, Emoji, Message
 from discord.ext import commands
 
 from blahaj_bot import BotClient
 
 logger = logging.getLogger(__name__)
 
-class MyModal(discord.ui.Modal):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-        self.add_item(discord.ui.InputText(label="Short Input"))
-        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
-
-    async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="Modal Results")
-        embed.add_field(name="Short Input", value=self.children[0].value)
-        embed.add_field(name="Long Input", value=self.children[1].value)
-        await interaction.response.send_message(embeds=[embed])
-
-class MyView(discord.ui.View):
+class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -29,28 +16,26 @@ class MyView(discord.ui.View):
         self.msg = msg
 
     @discord.ui.role_select(
-        placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
-        min_values=1,  # the minimum number of values that must be selected by the users
-        max_values=1,  # the maximum number of values that can be selected by the users
+        placeholder="Select a role!",
+        min_values=1,
+        max_values=1,
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
         await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None)
-        # await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
         if isinstance(reaction.emoji, str):
-            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
+            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
             await self.msg.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
-            if e is None:
-                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
+            if e is None or not e.is_usable():
+                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
             else:
-                await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {e}, id: {e.id}, is_usable: {e.is_usable()}")
-                if e.is_usable():
-                    await self.msg.add_reaction(reaction.emoji)
+                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
+                await self.msg.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
 
@@ -71,8 +56,7 @@ class Roles(commands.Cog):
 
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
-        """Shows an example of a modal dialog being invoked from a slash command."""
-        await ctx.respond("Add Role", view=MyView(self.bot, message))
+        await ctx.respond("Add Role", view=AddRoleView(self.bot, message), ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

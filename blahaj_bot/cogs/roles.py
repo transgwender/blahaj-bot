@@ -1,7 +1,7 @@
 import logging
 
 import discord
-from discord import SlashCommandGroup, MessageCommand, Emoji, PartialEmoji
+from discord import SlashCommandGroup, MessageCommand, Emoji, PartialEmoji, Message
 from discord.ext import commands
 
 from blahaj_bot import BotClient
@@ -22,10 +22,11 @@ class MyModal(discord.ui.Modal):
         await interaction.response.send_message(embeds=[embed])
 
 class MyView(discord.ui.View):
-    def __init__(self, bot: BotClient, *args, **kwargs) -> None:
+    def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.bot = bot
+        self.msg = msg
 
     @discord.ui.role_select(
         placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
@@ -41,7 +42,7 @@ class MyView(discord.ui.View):
 
         if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
-            await interaction.message.add_reaction(reaction.emoji)
+            await self.msg.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None:
@@ -49,7 +50,7 @@ class MyView(discord.ui.View):
             else:
                 await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {e}, id: {e.id}, is_usable: {e.is_usable()}")
                 if e.is_usable():
-                    await interaction.message.add_reaction(reaction.emoji)
+                    await self.msg.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
 
@@ -71,7 +72,7 @@ class Roles(commands.Cog):
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        await ctx.respond("Add Role", view=MyView(self.bot))
+        await ctx.respond("Add Role", view=MyView(self.bot, ctx.message))
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

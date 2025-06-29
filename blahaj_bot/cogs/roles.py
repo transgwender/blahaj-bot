@@ -32,6 +32,13 @@ class MyView(discord.ui.View):
         # await interaction.response.send_message(f"{select.values[0]}")
         await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
+class MyView2(discord.ui.View):
+    @discord.ui.select(
+        select_type=discord.ComponentType.input_text
+    )
+    async def select_callback(self, select, interaction):
+        await interaction.response.send_message(f"{select.values[0]}")
+
 class Roles(commands.Cog):
 
     def __init__(self, bot: BotClient):
@@ -52,7 +59,7 @@ class Roles(commands.Cog):
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        await ctx.respond("Add Role", view=MyView())
+        await ctx.respond("Add Role", view=MyView2())
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

@@ -39,7 +39,7 @@ class MyView(discord.ui.View):
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
-        await interaction.response.edit_message(content=f"Selected emoji: {reaction.emoji}")
+        await interaction.followup.edit_message(content=f"Selected emoji: {reaction.emoji}")
 
 class Roles(commands.Cog):
 

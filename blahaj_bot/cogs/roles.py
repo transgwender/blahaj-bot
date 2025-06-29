@@ -42,7 +42,12 @@ class MyView(discord.ui.View):
         if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
         elif isinstance(reaction.emoji, PartialEmoji):
-            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}")
+
+            e = self.bot.get_emoji(reaction.emoji.id)
+            if e is None:
+                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
+            else:
+                await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}")
         elif isinstance(reaction.emoji, Emoji):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}, is_usable: {reaction.emoji.is_usable()}")
         else:

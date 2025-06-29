@@ -41,9 +41,9 @@ class MyView(discord.ui.View):
 
         if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
-        elif reaction.emoji is PartialEmoji:
+        elif isinstance(reaction.emoji, PartialEmoji):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}")
-        elif reaction.emoji is Emoji:
+        elif isinstance(reaction.emoji, Emoji):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}, is_usable: {reaction.emoji.is_usable()}")
         else:
             await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")

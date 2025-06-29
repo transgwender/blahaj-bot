@@ -39,7 +39,10 @@ class MyView(discord.ui.View):
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
-        await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
+        if reaction.emoji.is_usable:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
+        else:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
 
 class Roles(commands.Cog):
 

@@ -22,11 +22,10 @@ class MyModal(discord.ui.Modal):
         await interaction.response.send_message(embeds=[embed])
 
 class MyView(discord.ui.View):
-    def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
+    def __init__(self, bot: BotClient, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.bot = bot
-        self.msg = msg
 
     @discord.ui.role_select(
         placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
@@ -35,6 +34,8 @@ class MyView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
+
+        orig = await interaction.original_message()
         await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None)
         # await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
@@ -42,7 +43,7 @@ class MyView(discord.ui.View):
 
         if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
-            await self.msg.add_reaction(reaction.emoji)
+            await orig.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None:
@@ -50,7 +51,7 @@ class MyView(discord.ui.View):
             else:
                 await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {e}, id: {e.id}, is_usable: {e.is_usable()}")
                 if e.is_usable():
-                    await self.msg.add_reaction(reaction.emoji)
+                    await orig.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
 

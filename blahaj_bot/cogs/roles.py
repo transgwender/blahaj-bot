@@ -22,19 +22,19 @@ class AddRoleView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
-        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None)
+        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None, delete_after=60)
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
         if isinstance(reaction.emoji, str):
-            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
+            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None, delete_after=60)
             await self.msg.add_reaction(reaction.emoji)
         else:
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None or not e.is_usable():
-                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
+                await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None, delete_after=60)
             else:
-                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
+                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None, delete_after=60)
                 await self.msg.add_reaction(reaction.emoji)
 
 class Roles(commands.Cog):
@@ -56,7 +56,7 @@ class Roles(commands.Cog):
 
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
-        await ctx.respond("Add Role", view=AddRoleView(self.bot, message), ephemeral=True)
+        await ctx.respond("Add Role", view=AddRoleView(self.bot, message))
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

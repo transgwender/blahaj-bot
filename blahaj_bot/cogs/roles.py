@@ -1,7 +1,7 @@
 import logging
 
 import discord
-from discord import SlashCommandGroup, MessageCommand
+from discord import SlashCommandGroup, MessageCommand, Emoji, PartialEmoji
 from discord.ext import commands
 
 from blahaj_bot import BotClient
@@ -39,10 +39,14 @@ class MyView(discord.ui.View):
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
-        # if reaction.is_usable:
-        await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, Id: {reaction.id}")
-        # else:
-        #     await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
+        if reaction.emoji is str:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
+        elif reaction.emoji is PartialEmoji:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}")
+        elif reaction.emoji is Emoji:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}, is_usable: {reaction.emoji.is_usable()}")
+        else:
+            await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji")
 
 class Roles(commands.Cog):
 

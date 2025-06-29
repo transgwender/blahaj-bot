@@ -8,16 +8,6 @@ from blahaj_bot import BotClient
 
 logger = logging.getLogger(__name__)
 
-class MyView(discord.ui.View):
-    @discord.ui.role_select(
-        placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
-        min_values=1,  # the minimum number of values that must be selected by the users
-        max_values=1,  # the maximum number of values that can be selected by the users
-    )
-    async def select_callback(self, select,
-                              interaction):
-        await interaction.response.send_message(f"{select.values[0]}")
-
 class MyModal(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -30,6 +20,17 @@ class MyModal(discord.ui.Modal):
         embed.add_field(name="Short Input", value=self.children[0].value)
         embed.add_field(name="Long Input", value=self.children[1].value)
         await interaction.response.send_message(embeds=[embed])
+
+class MyView(discord.ui.View):
+    @discord.ui.role_select(
+        placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
+        min_values=1,  # the minimum number of values that must be selected by the users
+        max_values=1,  # the maximum number of values that can be selected by the users
+    )
+    async def select_callback(self, select,
+                              interaction):
+        await interaction.response.send_message(f"{select.values[0]}")
+        await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
 class Roles(commands.Cog):
 
@@ -51,9 +52,7 @@ class Roles(commands.Cog):
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        modal = MyModal(title="Modal via Slash Command")
-        await ctx.send_modal(modal)
-        # await ctx.respond("Choose a flavor!", view=MyView())
+        await ctx.respond("Add Role", view=MyView())
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

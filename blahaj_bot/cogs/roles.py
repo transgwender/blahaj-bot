@@ -29,7 +29,7 @@ class MyView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction):
-        await interaction.response.send_message(f"{select.values[0]}")
+        # await interaction.response.send_message(f"{select.values[0]}")
         await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
 class Roles(commands.Cog):

@@ -18,6 +18,19 @@ class MyView(discord.ui.View):
                               interaction):
         await interaction.response.send_message(f"{select.values[0]}")
 
+class MyModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="Short Input"))
+        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="Modal Results")
+        embed.add_field(name="Short Input", value=self.children[0].value)
+        embed.add_field(name="Long Input", value=self.children[1].value)
+        await interaction.response.send_message(embeds=[embed])
+
 class Roles(commands.Cog):
 
     def __init__(self, bot: BotClient):
@@ -37,7 +50,10 @@ class Roles(commands.Cog):
 
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
-        await ctx.respond("Choose a flavor!", view=MyView())
+        """Shows an example of a modal dialog being invoked from a slash command."""
+        modal = MyModal(title="Modal via Slash Command")
+        await ctx.send_modal(modal)
+        # await ctx.respond("Choose a flavor!", view=MyView())
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

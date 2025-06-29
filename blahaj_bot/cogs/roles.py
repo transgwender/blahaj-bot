@@ -26,8 +26,6 @@ class MyView(discord.ui.View):
         super().__init__(*args, **kwargs)
 
         self.bot = bot
-        self.add_item(discord.ui.InputText(label="Short Input"))
-        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
 
     @discord.ui.role_select(
         placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected

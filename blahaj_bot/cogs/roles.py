@@ -28,16 +28,10 @@ class MyView(discord.ui.View):
         max_values=1,  # the maximum number of values that can be selected by the users
     )
     async def select_callback(self, select,
-                              interaction):
-        # await interaction.response.send_message(f"{select.values[0]}")
-        await interaction.response.send_modal(MyModal(title="Modal via Button"))
-
-class MyView2(discord.ui.View):
-    @discord.ui.select(
-        select_type=discord.ComponentType.input_text
-    )
-    async def select_callback(self, select, interaction):
-        await interaction.response.send_message(f"{select.values[0]}")
+                              interaction: discord.Interaction):
+        await interaction.response.edit_message(f"Role selected: {select.values[0]}."
+                                                f"React to this message to select associated emoji.")
+        # await interaction.response.send_modal(MyModal(title="Modal via Button"))
 
 class Roles(commands.Cog):
 
@@ -59,7 +53,7 @@ class Roles(commands.Cog):
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        await ctx.respond("Add Role", view=MyView2())
+        await ctx.respond("Add Role", view=MyView())
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

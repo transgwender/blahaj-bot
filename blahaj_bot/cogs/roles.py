@@ -39,7 +39,7 @@ class MyView(discord.ui.View):
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
-        if reaction.emoji is str:
+        if isinstance(reaction.emoji, str):
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}")
         elif reaction.emoji is PartialEmoji:
             await interaction.followup.edit_message(interaction.message.id, content=f"Selected emoji: {reaction.emoji}, id: {reaction.emoji.id}")

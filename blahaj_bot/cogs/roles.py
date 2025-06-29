@@ -22,6 +22,13 @@ class MyModal(discord.ui.Modal):
         await interaction.response.send_message(embeds=[embed])
 
 class MyView(discord.ui.View):
+    def __init__(self, bot: BotClient, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.bot = bot
+        self.add_item(discord.ui.InputText(label="Short Input"))
+        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
+
     @discord.ui.role_select(
         placeholder="Select a role!",  # the placeholder text that will be displayed if nothing is selected
         min_values=1,  # the minimum number of values that must be selected by the users
@@ -31,6 +38,10 @@ class MyView(discord.ui.View):
                               interaction: discord.Interaction):
         await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None)
         # await interaction.response.send_modal(MyModal(title="Modal via Button"))
+
+        reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
+
+        await interaction.response.edit_message(content=f"Selected emoji: {reaction.emoji}")
 
 class Roles(commands.Cog):
 
@@ -52,7 +63,7 @@ class Roles(commands.Cog):
     @commands.message_command(name="Add Role-Reactions")
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         """Shows an example of a modal dialog being invoked from a slash command."""
-        await ctx.respond("Add Role", view=MyView())
+        await ctx.respond("Add Role", view=MyView(self.bot))
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

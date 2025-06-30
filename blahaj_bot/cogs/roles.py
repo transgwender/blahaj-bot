@@ -1,12 +1,18 @@
+import asyncio
 import logging
 
 import discord
-from discord import SlashCommandGroup, Emoji, Message
+from discord import SlashCommandGroup, Emoji, Message, Role, Webhook, Interaction
 from discord.ext import commands
 
 from blahaj_bot import BotClient
 
 logger = logging.getLogger(__name__)
+
+async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
+    await interaction.followup.edit_message(interaction.id, content=f"Added emoji: {emoji} for {role}.", view=None)
+    await msg.add_reaction(emoji)
+    logger.info(f'Reaction Emoji: {emoji}, Role: {role}')
 
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
@@ -22,19 +28,24 @@ class AddRoleView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
-        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None, delete_after=60)
+        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None, delete_after=90)
 
-        reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
+        def check(reaction, user):
+            return user == self.msg.author
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60, check=check)
+        except asyncio.TimeoutError:
+            await interaction.followup.edit_message(interaction.message.id, content=f"No emoji provided, cancelling.", view=None)
+            return
 
         if not isinstance(reaction.emoji, str):
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None or not e.is_usable():
                 await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
                 return
-        await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
-        await self.msg.add_reaction(reaction.emoji)
 
-        logger.info(f'Reaction Emoji: {reaction.emoji} - {type(reaction.emoji)}, Role: {select.values[0]} - {type(select.values[0])}')
+        await process_add_role(role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
 
 class Roles(commands.Cog):
 

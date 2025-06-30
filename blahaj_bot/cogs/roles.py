@@ -26,16 +26,15 @@ class AddRoleView(discord.ui.View):
 
         reaction, user = await self.bot.wait_for('reaction_add', timeout=60)
 
-        if isinstance(reaction.emoji, str):
-            await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
-            await self.msg.add_reaction(reaction.emoji)
-        else:
+        if not isinstance(reaction.emoji, str):
             e: Emoji | None = self.bot.get_emoji(reaction.emoji.id)
             if e is None or not e.is_usable():
                 await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
-            else:
-                await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
-                await self.msg.add_reaction(reaction.emoji)
+                return
+        await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {reaction.emoji} for {select.values[0]}.", view=None)
+        await self.msg.add_reaction(reaction.emoji)
+
+        logger.info(f'Reaction Emoji: {reaction.emoji} - {type(reaction.emoji)}, Role: {select.values[0]} - {type(select.values[0])}')
 
 class Roles(commands.Cog):
 

@@ -48,8 +48,6 @@ class AddRoleView(discord.ui.View):
         await process_add_role(role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
 
 class Roles(commands.Cog):
-    bot: BotClient
-
     def __init__(self, bot: BotClient):
         self.bot = bot
 
@@ -69,8 +67,8 @@ class Roles(commands.Cog):
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60)
 
-    @bot.event
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+    @commands.Cog.listener("on_raw_reaction_add")
+    async def process_reaction(self, payload: discord.RawReactionActionEvent):
         logger.info(f'Reaction Added: {payload.emoji} to {payload.message_id} by {payload.user_id}')
 
 def setup(bot):

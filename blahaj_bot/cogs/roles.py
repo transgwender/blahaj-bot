@@ -10,7 +10,7 @@ from blahaj_bot import BotClient
 logger = logging.getLogger(__name__)
 
 async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
-    await interaction.followup.edit_message(interaction.id, content=f"Added emoji: {emoji} for {role}.", view=None)
+    await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
     await msg.add_reaction(emoji)
     logger.info(f'Reaction Emoji: {emoji}, Role: {role}')
 

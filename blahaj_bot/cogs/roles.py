@@ -14,7 +14,7 @@ class AssignableRole:
         self.role_id = role_id
         self.role_msg_id = role_msg_id
 
-        if emoji is str:
+        if isinstance(emoji, str):
             self.emoji = PartialEmoji(name=emoji)
         else:
             self.emoji = PartialEmoji(name=emoji.name, animated=emoji.animated, id=emoji.id)

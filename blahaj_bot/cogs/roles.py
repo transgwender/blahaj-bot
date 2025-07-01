@@ -2,17 +2,32 @@ import asyncio
 import logging
 
 import discord
-from discord import SlashCommandGroup, Emoji, Message, Role, Webhook, Interaction
+from discord import PartialEmoji, SlashCommandGroup, Emoji, Message, Role, Webhook, Interaction
 from discord.ext import commands
 
 from blahaj_bot import BotClient
 
 logger = logging.getLogger(__name__)
 
+class AssignableRole:
+    def __init__(self, role_id: int, emoji: Emoji|str, role_msg_id: int):
+        self.role_id = role_id
+        self.role_msg_id = role_msg_id
+
+        if emoji is str:
+            self.emoji = PartialEmoji(name=emoji)
+        else:
+            self.emoji = PartialEmoji(name=emoji.name, animated=emoji.animated, id=emoji.id)
+
+    def __str__(self) -> str:
+        return f'Emoji: {self.emoji} - Role Message ID: {self.role_msg_id} - Role ID: {self.role_id}'
+        
+        
+
 async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
     await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
     await msg.add_reaction(emoji)
-    logger.info(f'Reaction Emoji: {emoji}, Role: {role}')
+    logger.info(f'Reaction Emoji: {AssignableRole(role.id, emoji, msg.id)}')
 
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:

@@ -64,7 +64,7 @@ class AddRoleView(discord.ui.View):
 
         def check(reaction, user):
             logger.info(f'{user}, {interaction.user}')
-            return user.id == interaction.user.id
+            return user == self.msg.author
 
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60, check=check)

@@ -111,6 +111,16 @@ class Roles(commands.Cog):
                     logger.info(f'{x}')
         logger.info("test2")
 
+    role = SlashCommandGroup("role", "Role Management")
+    
+    @role.command(description="WIP")
+    async def debug(self, ctx: discord.ApplicationContext):
+        serverdb = self.bot.db[str(ctx.guild.id)]
+        rolescol = serverdb["roles"]
+        for x in rolescol.find():
+            logger.info(f'{x}')
+        await ctx.respond('WIP')
+
     @commands.message_command(name="Add Role-Reactions")
     @commands.guild_only()
     @discord.default_permissions(

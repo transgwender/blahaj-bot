@@ -40,7 +40,6 @@ async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interacti
         mappings[ar.server_id][ar.role_msg_id] = dict()
 
     mappings[ar.server_id][ar.role_msg_id][ar.emoji] = ar
-    logger.info(f'{mappings}')
 
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
@@ -99,36 +98,26 @@ class Roles(commands.Cog):
     @commands.Cog.listener("on_raw_reaction_add")
     async def process_reaction_add(self, payload: discord.RawReactionActionEvent):
         """Gives a role based on a reaction emoji."""
-        logger.info(f'Reaction Added: {payload.emoji} to {payload.message_id} by {payload.user_id}')
 
         guild = self.bot.get_guild(payload.guild_id)
         if guild is None or payload.guild_id not in mappings:
             # Make sure we're still in the guild, and it's cached.
-            logger.info(f'Failed guild {payload.guild_id}')
             return
-        logger.info(f'Passed guild {payload.guild_id}')
 
         # Make sure that the message the user is reacting to is the one we care about.
         if payload.message_id not in mappings[payload.guild_id]:
-            logger.info(f'Failed message {payload.message_id}')
             return
-        logger.info(f'Passed message {payload.message_id}')
 
         # If the emoji isn't the one we care about then exit as well.
         if payload.emoji not in mappings[payload.guild_id][payload.message_id]:
-            logger.info(f'Failed emoji {payload.emoji}')
             return
-        logger.info(f'Passed emoji {payload.emoji}')
         
         role_id = mappings[payload.guild_id][payload.message_id][payload.emoji].role_id
 
         role = guild.get_role(role_id)
         if role is None:
-            logger.info(f'Failed role {role}')
             # Make sure the role still exists and is valid.
             return
-        
-        logger.info(f'Passed role {role}')
 
         try:
             # Finally, add the role.
@@ -141,7 +130,6 @@ class Roles(commands.Cog):
     @commands.Cog.listener("on_raw_reaction_remove")
     async def process_reaction_remove(self, payload: discord.RawReactionActionEvent):
         """Removes a role based on a reaction emoji."""
-        logger.info(f'Reaction Removed: {payload.emoji} from {payload.message_id} by {payload.user_id}')
 
         # Make sure we're still in the guild, and it's cached.
         guild = self.bot.get_guild(payload.guild_id)
@@ -173,7 +161,7 @@ class Roles(commands.Cog):
         try:
             # Finally, remove the role.
             await member.remove_roles(role)
-            logger.info(f'Removed role {role} from {payload.member}')
+            logger.info(f'Removed role {role} from {member}')
         except discord.HTTPException:
             # If we want to do something in case of errors we'd do it here.
             pass

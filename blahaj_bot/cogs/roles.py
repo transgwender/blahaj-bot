@@ -1,4 +1,5 @@
 import asyncio
+from collections import defaultdict
 import logging
 
 import discord
@@ -23,8 +24,8 @@ class AssignableRole:
     def __str__(self) -> str:
         return f'Emoji: {self.emoji} - Role Message ID: {self.role_msg_id} - Role ID: {self.role_id} - Server ID: {self.server_id}'
         
-assignable_roles: list[AssignableRole]
-mappings: dict[int, dict[int, AssignableRole]]
+assignable_roles: list[AssignableRole] = list()
+mappings: dict[int, dict[int, AssignableRole]] = defaultdict(dict[int, AssignableRole])
 
 async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
     await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)

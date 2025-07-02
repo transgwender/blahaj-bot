@@ -24,7 +24,7 @@ class BotClient(commands.Bot):
         logger.info(f'Initializing cogs')
         super().load_extension('blahaj_bot.cogs.basic')
         # super().load_extension('blahaj_bot.cogs.roles')
-        # super().load_extension('blahaj_bot.cogs.backlog')
+        super().load_extension('blahaj_bot.cogs.backlog')
         logger.info(f'Cogs initialized')
 
 

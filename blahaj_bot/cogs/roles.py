@@ -40,7 +40,9 @@ class AssignableRole:
     @classmethod
     def decode(cls, data):
         assert data['version'] == 1
-        return cls(data['server_id'], data['role_id'], PartialEmoji(name=data['emoji']['name'], animated=['emoji']['animated'], id=['emoji']['id']), data['role_msg_id'])
+        emoji = PartialEmoji(name=data['emoji']['name'], animated=['emoji']['animated'], id=['emoji']['id'])
+        logger.info(f'{emoji}')
+        return cls(data['server_id'], data['role_id'], emoji, data['role_msg_id'])
         
 assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role

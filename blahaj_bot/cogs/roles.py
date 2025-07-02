@@ -96,6 +96,10 @@ class Roles(commands.Cog):
         await ctx.respond('WIP')
 
     @commands.message_command(name="Add Role-Reactions")
+    @commands.guild_only()
+    @discord.default_permissions(
+        manage_roles=True,
+    ) # Only if can manage roles
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60)
 

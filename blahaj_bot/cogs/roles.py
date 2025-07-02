@@ -63,7 +63,7 @@ class AddRoleView(discord.ui.View):
         await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to the original message to select the associated emoji.", view=None, delete_after=90)
 
         def check(reaction, user):
-            return user == self.msg.author
+            return user == interaction.user
 
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60, check=check)

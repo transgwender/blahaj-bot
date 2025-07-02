@@ -207,6 +207,7 @@ class Roles(commands.Cog):
         # so we must get the member ourselves from the payload's `.user_id`.
         member = guild.get_member(payload.user_id)
         if member is None:
+            logger.info(f'Fail {member}')
             # Make sure the member still exists and is valid.
             return
 

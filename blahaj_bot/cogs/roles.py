@@ -27,31 +27,38 @@ class AssignableRole:
 assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role
 
+async def process_add_role(bot: BotClient, role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
+    ar = AssignableRole(msg.guild.id, role.id, emoji, msg.id)
+    logger.info(f'Add Assignable Role: {ar}')
+    assignable_roles.append(ar)
+
+    if ar.server_id not in mappings:
+        mappings[ar.server_id] = dict()
+    if ar.role_msg_id not in mappings[ar.server_id]:
+        mappings[ar.server_id][ar.role_msg_id] = dict()
+
+    if ar.emoji in mappings[ar.server_id][ar.role_msg_id]:
+        await interaction.followup.edit_message(interaction.message.id, content=f"Cannot add emoji: {emoji} for {role}. Message already uses that emoji", view=None)
+        return
+
+    # Add to persistence
+    serverdb = bot.db[str(ar.server_id)]
+    rolescol = serverdb["roles"]
+    result = rolescol.replace_one({"role_id": ar.role_id, "role_msg_id": ar.role_msg_id, "emoji": ar.emoji}, {"role_id": ar.role_id, "role_msg_id": ar.role_msg_id, "emoji": ar.emoji, "version": 1}, upsert=True)
+    if not result.acknowledged:
+        await interaction.followup.edit_message(interaction.message.id, content=f"An error has occurred.", view=None)
+        return
+
+    mappings[ar.server_id][ar.role_msg_id][ar.emoji] = ar
+    await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
+    await msg.add_reaction(emoji)
+
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.bot = bot
         self.msg = msg
-
-    async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
-        ar = AssignableRole(msg.guild.id, role.id, emoji, msg.id)
-        logger.info(f'Add Assignable Role: {ar}')
-        assignable_roles.append(ar)
-
-        if ar.server_id not in mappings:
-            mappings[ar.server_id] = dict()
-        if ar.role_msg_id not in mappings[ar.server_id]:
-            mappings[ar.server_id][ar.role_msg_id] = dict()
-
-        if ar.emoji in mappings[ar.server_id][ar.role_msg_id]:
-            await interaction.followup.edit_message(interaction.message.id, content=f"Cannot add emoji: {emoji} for {role}. Message already uses that emoji", view=None)
-            return
-
-        mappings[ar.server_id][ar.role_msg_id][ar.emoji] = ar
-
-        await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
-        await msg.add_reaction(emoji)
 
     @discord.ui.role_select(
         placeholder="Select a role!",
@@ -77,23 +84,17 @@ class AddRoleView(discord.ui.View):
                 await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
                 return
 
-        await self.process_add_role(role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
+        await process_add_role(bot=self.bot, role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
 
 class Roles(commands.Cog):
     def __init__(self, bot: BotClient):
         self.bot = bot
 
-    role = SlashCommandGroup("role", "Role Management")
-
-    @role.command(description="WIP")
-    async def debug(self, ctx: discord.ApplicationContext):
-        serverdb = self.bot.db[str(ctx.guild.id)]
-        rolescol = serverdb["roles"]
-        result = rolescol.replace_one({"role": "debug"}, {"role": "debug"}, upsert=True)
-        logger.info(f'{ctx.guild.name} -- {result}')
-        for x in rolescol.find():
-            logger.info(f'{x}')
-        await ctx.respond('WIP')
+        dblist = self.bot.db.list_database_names()
+        for serverdb in dblist:
+            rolescol = serverdb["roles"]
+            for x in rolescol.find({"version": 1}):
+                logger.info(f'{x}')
 
     @commands.message_command(name="Add Role-Reactions")
     @commands.guild_only()

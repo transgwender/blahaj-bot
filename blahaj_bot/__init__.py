@@ -29,6 +29,7 @@ def bot() -> None:
 
     intents = discord.Intents.default()
     intents.message_content = True
+    intents.members = True
 
     file = open(sys.argv[1], "r")
     TOKEN = file.read()

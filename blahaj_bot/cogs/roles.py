@@ -113,7 +113,7 @@ class Roles(commands.Cog):
             serverdb = self.bot.db[name]
             if "roles" in serverdb.list_collection_names():
                 rolescol = serverdb["roles"]
-                for x in rolescol.find({"version", 1}):
+                for x in rolescol.find({"type":"AssignableRole"}):
                     logger.info(f'{x}')
 
     role = SlashCommandGroup("role", "Role Management")

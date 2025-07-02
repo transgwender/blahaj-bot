@@ -104,20 +104,24 @@ class Roles(commands.Cog):
         guild = self.bot.get_guild(payload.guild_id)
         if guild is None or payload.guild_id not in mappings:
             # Make sure we're still in the guild, and it's cached.
+            logger.info(f'Failed guild {payload.guild_id}')
             return
 
         # Make sure that the message the user is reacting to is the one we care about.
         if payload.message_id not in mappings[payload.guild_id]:
+            logger.info(f'Failed message {payload.message_id}')
             return
 
         # If the emoji isn't the one we care about then exit as well.
         if payload.emoji not in mappings[payload.guild_id][payload.message_id]:
+            logger.info(f'Failed emoji {payload.emoji}')
             return
         
         role_id = mappings[payload.guild_id][payload.message_id][payload.emoji].role_id
 
         role = guild.get_role(role_id)
         if role is None:
+            logger.info(f'Failed role {role}')
             # Make sure the role still exists and is valid.
             return
 

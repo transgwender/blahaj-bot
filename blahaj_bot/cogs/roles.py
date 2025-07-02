@@ -23,6 +23,17 @@ class AssignableRole:
 
     def __str__(self) -> str:
         return f'Emoji: {self.emoji} - Role Message ID: {self.role_msg_id} - Role ID: {self.role_id} - Server ID: {self.server_id}'
+    
+    def encode(self):
+        return {'type': "AssignableRole", 
+                'role_id': self.role_id, 
+                'role_msg_id': self.role_msg_id, 
+                'server_id': self.server_id, 
+                'emoji': {'type': "PartialEmoji", 
+                          'name': self.emoji.name,
+                          'id': self.emoji.id,
+                          'animated': self.emoji.animated},
+                'version': 1}
         
 assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role
@@ -44,7 +55,7 @@ async def process_add_role(bot: BotClient, role: Role, emoji: Emoji|str, msg: Me
     # Add to persistence
     serverdb = bot.db[str(ar.server_id)]
     rolescol = serverdb["roles"]
-    result = rolescol.replace_one({"roles" : ar.__dict__}, {"roles" : ar.__dict__, "version": 1}, upsert=True)
+    result = rolescol.replace_one({"role_id" : ar.role_id, "role_msg_id": ar.role_msg_id}, ar.encode(), upsert=True)
     if not result.acknowledged:
         await interaction.followup.edit_message(interaction.message.id, content=f"An error has occurred.", view=None)
         return

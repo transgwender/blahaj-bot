@@ -60,7 +60,7 @@ class AddRoleView(discord.ui.View):
     )
     async def select_callback(self, select,
                               interaction: discord.Interaction):
-        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to this message to select associated emoji.", view=None, delete_after=90)
+        await interaction.response.edit_message(content=f"Role selected: {select.values[0]}.\nReact to the original message to select the associated emoji.", view=None, delete_after=90)
 
         def check(reaction, user):
             return user == self.msg.author
@@ -101,7 +101,7 @@ class Roles(commands.Cog):
         manage_roles=True,
     ) # Only if can manage roles
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
-        await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60)
+        await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60, ephemeral=True)
 
     # https://github.com/Pycord-Development/pycord/blob/master/examples/reaction_roles.py
     @commands.Cog.listener("on_raw_reaction_add")

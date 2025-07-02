@@ -44,7 +44,7 @@ async def process_add_role(bot: BotClient, role: Role, emoji: Emoji|str, msg: Me
     # Add to persistence
     serverdb = bot.db[str(ar.server_id)]
     rolescol = serverdb["roles"]
-    result = rolescol.replace_one({"role_id": ar.role_id, "role_msg_id": ar.role_msg_id, "emoji": ar.emoji}, {"role_id": ar.role_id, "role_msg_id": ar.role_msg_id, "emoji": ar.emoji, "version": 1}, upsert=True)
+    result = rolescol.replace_one({"roles" : ar.__dict__}, {"roles" : ar.__dict__, "version": 1}, upsert=True)
     if not result.acknowledged:
         await interaction.followup.edit_message(interaction.message.id, content=f"An error has occurred.", view=None)
         return

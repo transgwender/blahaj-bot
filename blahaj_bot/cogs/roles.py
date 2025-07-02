@@ -77,7 +77,7 @@ class AddRoleView(discord.ui.View):
                 await interaction.followup.edit_message(interaction.message.id, content=f"Unavailable emoji selected.", view=None)
                 return
 
-        await process_add_role(role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
+        await self.process_add_role(role=select.values[0], emoji=reaction.emoji, msg=self.msg, interaction=interaction)
 
 class Roles(commands.Cog):
     def __init__(self, bot: BotClient):

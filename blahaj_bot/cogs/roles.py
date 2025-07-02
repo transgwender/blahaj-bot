@@ -37,7 +37,7 @@ async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interacti
     if ar.role_msg_id not in mappings[ar.server_id]:
         mappings[ar.server_id][ar.role_msg_id] = dict()
 
-    if ar.emoji in mappings[ar.server_id][ar.role_msg_id][ar.emoji]:
+    if ar.emoji in mappings[ar.server_id][ar.role_msg_id]:
         await interaction.followup.edit_message(interaction.message.id, content=f"Cannot add emoji: {emoji} for {role}. Message already uses that emoji", view=None)
         return
 

@@ -110,12 +110,12 @@ class Roles(commands.Cog):
 
         logger.info("test1")
         dblist = self.bot.db.list_database_names()
-        for serverdb in dblist:
-            logger.info(serverdb)
-            # if "roles" in serverdb:
-            #     rolescol = serverdb["roles"]
-            #     for x in rolescol.find():
-            #         logger.info(f'{x}')
+        for name in dblist:
+            serverdb = self.bot.db[name]
+            if "roles" in serverdb:
+                rolescol = serverdb["roles"]
+                for x in rolescol.find({"version", 1}):
+                    logger.info(f'{x}')
         logger.info("test2")
 
     role = SlashCommandGroup("role", "Role Management")

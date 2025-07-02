@@ -4,7 +4,7 @@ Discord Bot
 
 __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
-__version__ = '0.0.12'
+__version__ = '0.1.0'
 
 import time
 import aiohttp

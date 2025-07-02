@@ -10,9 +10,10 @@ from blahaj_bot import BotClient
 logger = logging.getLogger(__name__)
 
 class AssignableRole:
-    def __init__(self, role_id: int, emoji: Emoji|str, role_msg_id: int):
+    def __init__(self, server_id: int, role_id: int, emoji: Emoji|str, role_msg_id: int):
         self.role_id = role_id
         self.role_msg_id = role_msg_id
+        self.server_id = server_id
 
         if isinstance(emoji, str):
             self.emoji = PartialEmoji(name=emoji)
@@ -20,14 +21,19 @@ class AssignableRole:
             self.emoji = PartialEmoji(name=emoji.name, animated=emoji.animated, id=emoji.id)
 
     def __str__(self) -> str:
-        return f'Emoji: {self.emoji} - Role Message ID: {self.role_msg_id} - Role ID: {self.role_id}'
+        return f'Emoji: {self.emoji} - Role Message ID: {self.role_msg_id} - Role ID: {self.role_id} - Server ID: {self.server_id}'
         
-        
+assignable_roles: list[AssignableRole]
+mappings: dict[int, dict[int, AssignableRole]]
 
 async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
     await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
     await msg.add_reaction(emoji)
-    logger.info(f'Reaction Emoji: {AssignableRole(role.id, emoji, msg.id)}')
+    ar = AssignableRole(msg.guild.id, role.id, emoji, msg.id)
+    logger.info(f'Add Assignable Role: {ar}')
+    assignable_roles.append(ar)
+    mappings[ar.server_id][ar.role_msg_id] = ar
+    logger.info(f'{mappings}')
 
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:
@@ -82,9 +88,16 @@ class Roles(commands.Cog):
     async def add_role_reaction(self, ctx: discord.ApplicationContext, message: discord.Message):
         await ctx.respond("Add Role", view=AddRoleView(self.bot, message), delete_after=60)
 
+    # https://github.com/Pycord-Development/pycord/blob/master/examples/reaction_roles.py
     @commands.Cog.listener("on_raw_reaction_add")
-    async def process_reaction(self, payload: discord.RawReactionActionEvent):
+    async def process_reaction_add(self, payload: discord.RawReactionActionEvent):
+        """Gives a role based on a reaction emoji."""
         logger.info(f'Reaction Added: {payload.emoji} to {payload.message_id} by {payload.user_id}')
+
+    @commands.Cog.listener("on_raw_reaction_remove")
+    async def process_reaction_remove(self, payload: discord.RawReactionActionEvent):
+        """Removes a role based on a reaction emoji."""
+        logger.info(f'Reaction Removed: {payload.emoji} from {payload.message_id} by {payload.user_id}')
 
 def setup(bot):
     bot.add_cog(Roles(bot)) # add the cog to the bot

@@ -178,20 +178,23 @@ class Roles(commands.Cog):
     @commands.Cog.listener("on_raw_reaction_remove")
     async def process_reaction_remove(self, payload: discord.RawReactionActionEvent):
         """Removes a role based on a reaction emoji."""
-
+        logger.info("test1")
         # Make sure we're still in the guild, and it's cached.
         guild = self.bot.get_guild(payload.guild_id)
         if guild is None or payload.guild_id not in mappings:
             return
 
+        logger.info("test2")
         # Make sure that the message the user is reacting to is the one we care about.
         if payload.message_id not in mappings[payload.guild_id]:
             return
 
+        logger.info("test3")
         # If the emoji isn't the one we care about then exit as well.
         if payload.emoji not in mappings[payload.guild_id][payload.message_id]:
             return
         
+        logger.info("test4")
         role_id = mappings[payload.guild_id][payload.message_id][payload.emoji].role_id
 
         role = guild.get_role(role_id)
@@ -199,6 +202,7 @@ class Roles(commands.Cog):
             # Make sure the role still exists and is valid.
             return
 
+        logger.info("test5")
         # The payload for `on_raw_reaction_remove` does not provide `.member`
         # so we must get the member ourselves from the payload's `.user_id`.
         member = guild.get_member(payload.user_id)
@@ -206,6 +210,7 @@ class Roles(commands.Cog):
             # Make sure the member still exists and is valid.
             return
 
+        logger.info("test6")
         try:
             # Finally, remove the role.
             await member.remove_roles(role)

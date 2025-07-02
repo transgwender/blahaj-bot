@@ -104,6 +104,7 @@ class Roles(commands.Cog):
         logger.info("test1")
         dblist = self.bot.db.list_databases()
         for serverdb in dblist:
+            logger.info("test3")
             if "roles" in serverdb:
                 rolescol = serverdb["roles"]
                 for x in rolescol.find():

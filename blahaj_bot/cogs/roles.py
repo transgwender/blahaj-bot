@@ -90,7 +90,7 @@ class Roles(commands.Cog):
     def __init__(self, bot: BotClient):
         self.bot = bot
 
-        dblist = self.bot.db.list_database_names()
+        dblist = self.bot.db.list_databases()
         for serverdb in dblist:
             rolescol = serverdb["roles"]
             for x in rolescol.find({"version": 1}):

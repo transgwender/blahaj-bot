@@ -114,7 +114,15 @@ class Roles(commands.Cog):
             if "roles" in serverdb.list_collection_names():
                 rolescol = serverdb["roles"]
                 for x in rolescol.find({"type":"AssignableRole"}):
-                    logger.info(f'{x}')
+                    ar = AssignableRole.decode(x)
+                    logger.info(f'Load Assignable Role: {ar}')
+                    assignable_roles.append(ar)
+                    if ar.server_id not in mappings:
+                        mappings[ar.server_id] = dict()
+                    if ar.role_msg_id not in mappings[ar.server_id]:
+                        mappings[ar.server_id][ar.role_msg_id] = dict()
+                    mappings[ar.server_id][ar.role_msg_id][ar.emoji] = ar
+                    
 
     role = SlashCommandGroup("role", "Role Management")
     

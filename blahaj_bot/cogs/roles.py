@@ -101,12 +101,14 @@ class Roles(commands.Cog):
     def __init__(self, bot: BotClient):
         self.bot = bot
 
+        logger.info("test1")
         dblist = self.bot.db.list_databases()
         for serverdb in dblist:
             if "roles" in serverdb:
                 rolescol = serverdb["roles"]
-                for x in rolescol.find({"version": 1}):
+                for x in rolescol.find():
                     logger.info(f'{x}')
+        logger.info("test2")
 
     @commands.message_command(name="Add Role-Reactions")
     @commands.guild_only()

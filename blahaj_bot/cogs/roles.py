@@ -28,8 +28,6 @@ assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role
 
 async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interaction: Interaction):
-    await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
-    await msg.add_reaction(emoji)
     ar = AssignableRole(msg.guild.id, role.id, emoji, msg.id)
     logger.info(f'Add Assignable Role: {ar}')
     assignable_roles.append(ar)
@@ -39,7 +37,14 @@ async def process_add_role(role: Role, emoji: Emoji|str, msg: Message, interacti
     if ar.role_msg_id not in mappings[ar.server_id]:
         mappings[ar.server_id][ar.role_msg_id] = dict()
 
+    if ar.emoji in mappings[ar.server_id][ar.role_msg_id][ar.emoji]:
+        await interaction.followup.edit_message(interaction.message.id, content=f"Cannot add emoji: {emoji} for {role}. Message already uses that emoji", view=None)
+        return
+
     mappings[ar.server_id][ar.role_msg_id][ar.emoji] = ar
+
+    await interaction.followup.edit_message(interaction.message.id, content=f"Added emoji: {emoji} for {role}.", view=None)
+    await msg.add_reaction(emoji)
 
 class AddRoleView(discord.ui.View):
     def __init__(self, bot: BotClient, msg: Message, *args, **kwargs) -> None:

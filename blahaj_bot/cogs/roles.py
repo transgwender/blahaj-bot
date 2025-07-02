@@ -11,13 +11,15 @@ from blahaj_bot import BotClient
 logger = logging.getLogger(__name__)
 
 class AssignableRole:
-    def __init__(self, server_id: int, role_id: int, emoji: Emoji|str, role_msg_id: int):
+    def __init__(self, server_id: int, role_id: int, emoji: PartialEmoji|Emoji|str, role_msg_id: int):
         self.role_id = role_id
         self.role_msg_id = role_msg_id
         self.server_id = server_id
 
         if isinstance(emoji, str):
             self.emoji = PartialEmoji(name=emoji)
+        elif isinstance(emoji, PartialEmoji):
+            self.emoji = emoji
         else:
             self.emoji = PartialEmoji(name=emoji.name, animated=emoji.animated, id=emoji.id)
 
@@ -34,6 +36,11 @@ class AssignableRole:
                           'id': self.emoji.id,
                           'animated': self.emoji.animated},
                 'version': 1}
+    
+    @classmethod
+    def decode(cls, data):
+        assert data['version'] == 1
+        return cls(data['server_id'], data['role_id'], PartialEmoji(name=data['emoji']['name'], animated=['emoji']['animated'], id=['emoji']['id']), data['role_msg_id'])
         
 assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role
@@ -104,7 +111,7 @@ class Roles(commands.Cog):
         logger.info("test1")
         dblist = self.bot.db.list_databases()
         for serverdb in dblist:
-            logger.info("test3")
+            logger.info(serverdb)
             if "roles" in serverdb:
                 rolescol = serverdb["roles"]
                 for x in rolescol.find():

@@ -35,13 +35,18 @@ class AssignableRole:
                           'name': self.emoji.name,
                           'id': self.emoji.id,
                           'animated': self.emoji.animated},
-                'version': 1}
+                'requirements': None,
+                'version': 2}
     
     @classmethod
     def decode(cls, data):
-        assert data['version'] == 1
-        return cls(data['server_id'], data['role_id'], PartialEmoji(name=data['emoji']['name'], animated=data['emoji']['animated'], id=data['emoji']['id']), data['role_msg_id'])
-        
+        match data['version']:
+            case 1:
+                return cls(data['server_id'], data['role_id'], PartialEmoji(name=data['emoji']['name'], animated=data['emoji']['animated'], id=data['emoji']['id']), data['role_msg_id'])
+            case 2:
+                return cls(data['server_id'], data['role_id'], PartialEmoji(name=data['emoji']['name'], animated=data['emoji']['animated'], id=data['emoji']['id']), data['role_msg_id'])
+            case _:
+                raise AssertionError
 assignable_roles: list[AssignableRole] = list()
 mappings: dict[int, dict[int, dict[PartialEmoji, AssignableRole]]] = dict() # server id -> message id -> emoji -> role
 

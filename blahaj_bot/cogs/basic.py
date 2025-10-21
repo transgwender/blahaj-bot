@@ -18,7 +18,7 @@ class Basic(commands.Cog):
 
     @commands.command()
     async def github(self, ctx: commands.Context):
-        await ctx.send('Check out my source code at: https://github.com/transgwender/blahaj-bot')
+        await ctx.send('Check out my source code at: https://git.robotcowgirl.farm/transgwender/blahaj-bot')
 
     @commands.command()
     async def version(self, ctx: commands.Context):

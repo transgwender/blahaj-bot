@@ -265,7 +265,7 @@
             ({ pkgs, config, inputs, ... }: {
               # Only allow this to boot as a container
               boot.isContainer = true;
-              
+
               networking.hostName = "blahaj-bot";
 
               environment.systemPackages = [
@@ -280,17 +280,20 @@
                 useDefaultShell = true;
                 uid = 1000;
               };
-                  
+
               services.blahaj-bot = {
                 enable = true;
-                token = "/etc/blahaj-bot/token";
+                config = "/etc/blahaj-bot/config";
+                dbPort = 27017;
               };
 
               services.ferretdb = {
                 enable = true;
-                # settings = {
-                #   FERRETDB_STATE_DIR = "/data/blahaj-bot/db";
-                # };
+                 settings = {
+                   FERRETDB_STATE_DIR = "/var/lib/ferretdb";
+                   FERRETDB_LISTEN_ADDR = "127.0.0.1:27017";
+                   FERRETDB_DEBUG_ADDR = "-"; # Disable
+                 };
               };
 
               system.stateVersion = "24.11";

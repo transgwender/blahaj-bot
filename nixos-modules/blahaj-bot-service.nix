@@ -25,10 +25,17 @@ in
         '';
       };
 
-      token = mkOption {
+      config = mkOption {
         type = types.path;
         description = ''
-          Path to the token secret
+          Path to the config
+        '';
+      };
+
+      dbPort = mkOption {
+        type = types.int;
+        description = ''
+          Port to use for database
         '';
       };
     };
@@ -53,7 +60,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Restart = "on-failure";
-        ExecStart = "+${pkgs.blahaj-bot}/bin/bot ${cfg.token} -u";
+        ExecStart = "+${pkgs.blahaj-bot}/bin/bot ${cfg.config} ${builtins.toString cfg.dbPort} -u";
         User = "blahaj-bot";
         # DynamicUser = "yes";
         RuntimeDirectory = "blahaj-bot";

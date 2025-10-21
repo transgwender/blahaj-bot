@@ -6,6 +6,7 @@ __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
 __version__ = '0.1.0'
 
+import json
 import time
 import aiohttp
 
@@ -20,6 +21,9 @@ import sys
 logger = logging.getLogger(__name__)
 
 def bot() -> None:
+    if len(sys.argv) < 3:
+        print('Usage: colonH <config path> <dbPort>')
+        sys.exit(1)
 
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(fmt="%(asctime)s %(name)s.%(levelname)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
@@ -31,11 +35,14 @@ def bot() -> None:
     intents.message_content = True
     intents.members = True
 
-    file = open(sys.argv[1], "r")
-    TOKEN = file.read()
+    with open(sys.argv[1], 'r') as file:
+        data = json.load(file)
+
+    BOT_TOKEN: str = data['token']
+    QUOTES_AUTH_TOKEN: str = data['db_auth_token']
     file.close()
 
-    db_client = MongoClient('localhost', 27017)
+    db_client = MongoClient('localhost', int(sys.argv[2]))
 
     backlog_client = BacklogClient()
 
@@ -43,7 +50,7 @@ def bot() -> None:
 
     for i in range(3, 100):
         try:
-            bot_client.run(TOKEN)
+            bot_client.run(BOT_TOKEN)
         except aiohttp.ClientConnectorError:
             logger.warning(f'Failed to connect, retrying in {i} seconds...')
             time.sleep(i)

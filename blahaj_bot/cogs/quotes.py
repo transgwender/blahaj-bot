@@ -1,4 +1,6 @@
 import json
+from json import JSONEncoder
+from urllib.error import URLError, HTTPError
 
 import discord
 from discord import slash_command, SlashCommandGroup
@@ -25,6 +27,10 @@ class Quote:
             full_quote += f", {self.date}"
         return full_quote
 
+class QuoteEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
+
 def as_quote(dct: dict):
     if 'quote' not in dct:
         return None
@@ -44,15 +50,22 @@ class Quotes(commands.Cog):
     @discord.option("date", description="Date", input_type=str, required=True)
     async def add_quote(self, ctx: discord.ApplicationContext, quote, person, date):
         quote = Quote(quote=quote, person=person, date=date)
-        data = json.dumps(quote).encode('utf-8')
+        data = json.dumps(quote, cls=QuoteEncoder).encode('utf-8')
         req = request.Request(f"https://api.robotcowgirl.farm/v1/quotes/{ctx.guild_id}")
         req.add_header('Content-Type', 'application/json')
         req.add_header('User-Agent', f'Blahaj-Bot/{__version__} (dev[at]gwenkornak.ca)')
         req.add_header('X-DB-Auth-Key', self.bot.quotes_auth_token)
-        resp = request.urlopen(req)
-        result = json.loads(resp.read().decode('utf-8'), object_hook=as_quote)
-        if not result:
+        try:
+            resp = request.urlopen(req, data)
+        except HTTPError as e:
+            logger.error(f'Was unable to create quote {quote}: {e}')
             await ctx.respond(f'Unable to create quote', ephemeral=True)
+            return
+        except URLError as e:
+            logger.error(f'Failed to reach server: {e}')
+            await ctx.respond(f'Failed to reach server', ephemeral=True)
+            return
+        result = json.loads(resp.read().decode('utf-8'), object_hook=as_quote)
         quote_id = result.id
         await ctx.respond(f'Added quote {quote_id}, {result}', ephemeral=True)
 
@@ -61,10 +74,17 @@ class Quotes(commands.Cog):
     async def get_quote(self, ctx: discord.ApplicationContext, quote_id):
         req = request.Request(f"https://api.robotcowgirl.farm/v1/quotes/{ctx.guild_id}/{quote_id}")
         req.add_header('User-Agent', f'Blahaj-Bot/{__version__} (dev[at]gwenkornak.ca)')
-        resp = request.urlopen(req)
-        quote = json.loads(resp.read().decode('utf-8'), object_hook=as_quote)
-        if not quote:
+        try:
+            resp = request.urlopen(req)
+        except HTTPError as e:
+            logger.error(f'Failed to get quote id {quote_id}: {e}')
             await ctx.respond(f'No quote found for quote {quote_id}', ephemeral=True)
+            return
+        except URLError as e:
+            logger.error(f'Failed to reach server: {e}')
+            await ctx.respond(f'Failed to reach server', ephemeral=True)
+            return
+        quote = json.loads(resp.read().decode('utf-8'), object_hook=as_quote)
         await ctx.respond(f'Quote {quote_id}, {quote}', ephemeral=True)
 
 def setup(bot):

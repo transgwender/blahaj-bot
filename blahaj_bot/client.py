@@ -16,15 +16,18 @@ class BotClient(commands.Bot):
                  db: MongoClient[Mapping[str, Any]],
                  command_prefix,
                  backlog: BacklogClient,
+                 quotes_auth_token: str,
                  intents: discord.Intents, **options: Any):
         super().__init__(command_prefix=command_prefix, intents=intents, **options)
         self.db = db
         self.backlog = backlog
+        self.quotes_auth_token = quotes_auth_token
         
         logger.info(f'Initializing cogs')
         super().load_extension('blahaj_bot.cogs.basic')
         super().load_extension('blahaj_bot.cogs.roles')
         super().load_extension('blahaj_bot.cogs.backlog')
+        super().load_extension('blahaj_bot.cogs.quotes')
         logger.info(f'Cogs initialized')
 
 

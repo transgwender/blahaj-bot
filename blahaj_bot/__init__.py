@@ -46,7 +46,7 @@ def bot() -> None:
 
     backlog_client = BacklogClient()
 
-    bot_client = BotClient(db=db_client, command_prefix=commands.when_mentioned_or("$"), backlog=backlog_client, intents=intents)
+    bot_client = BotClient(db=db_client, command_prefix=commands.when_mentioned_or("$"), backlog=backlog_client, quotes_auth_token=QUOTES_AUTH_TOKEN, intents=intents)
 
     for i in range(3, 100):
         try:

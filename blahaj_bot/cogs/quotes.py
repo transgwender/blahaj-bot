@@ -43,7 +43,8 @@ class Quotes(commands.Cog):
 
     quotes = SlashCommandGroup("quotes", "Commands for getting quotes")
 
-    @quotes.command(description="Add quote to database", guild_only=True)
+    @quotes.command(description="Add quote to database")
+    @commands.guild_only()
     @discord.default_permissions(administrator=True)
     @discord.option("quote", description="Quote", input_type=str, required=True)
     @discord.option("person", description="Person", input_type=str, required=True)
@@ -69,7 +70,8 @@ class Quotes(commands.Cog):
         quote_id = result.id
         await ctx.respond(f'Added quote {quote_id}, {result}', ephemeral=True)
 
-    @quotes.command(description="Get quote from database", guild_only=True)
+    @quotes.command(description="Get quote from database")
+    @commands.guild_only()
     @discord.option("quote_id", description="Quote ID", input_type=int, required=True)
     async def get_quote(self, ctx: discord.ApplicationContext, quote_id):
         req = request.Request(f"https://api.robotcowgirl.farm/v1/quotes/{ctx.guild_id}/{quote_id}")

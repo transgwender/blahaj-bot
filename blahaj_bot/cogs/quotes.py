@@ -72,7 +72,7 @@ class Quotes(commands.Cog):
             return
         result = r.json(object_hook=as_quote)
         quote_id = result.id
-        await ctx.respond(f'Added quote {quote_id}, {result}', ephemeral=True)
+        await ctx.respond(f'Added quote #{quote_id}, {result}', ephemeral=True)
 
     @quotes.command(description="Edit quote")
     @commands.guild_only()
@@ -100,9 +100,7 @@ class Quotes(commands.Cog):
             logger.error(f'Failed to reach server: {e}')
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
-        result = r.json(object_hook=as_quote)
-        quote_id = result.id
-        await ctx.respond(f'Edited quote {quote_id}, {result}', ephemeral=True)
+        await ctx.respond(f'Edited quote #{quote_id}', ephemeral=True)
 
     @quotes.command(description="Delete quote")
     @commands.guild_only()
@@ -124,7 +122,7 @@ class Quotes(commands.Cog):
             logger.error(f'Failed to reach server: {e}')
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
-        await ctx.respond(f'Deleted quote {quote_id}', ephemeral=True)
+        await ctx.respond(f'Deleted quote #{quote_id}', ephemeral=True)
 
     @quotes.command(description="Get quote")
     @commands.guild_only()
@@ -145,7 +143,7 @@ class Quotes(commands.Cog):
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
         result = r.json(object_hook=as_quote)
-        await ctx.respond(f'#{quote_id}, {result}', ephemeral=True)
+        await ctx.respond(f'Quote #{quote_id}, {result}', ephemeral=True)
 
     @quotes.command(description="Get random quote")
     @commands.guild_only()
@@ -165,7 +163,7 @@ class Quotes(commands.Cog):
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
         result = r.json(object_hook=as_quote)
-        await ctx.respond(f'#{result.id}, {result}', ephemeral=True)
+        await ctx.respond(f'Quote #{result.id}, {result}', ephemeral=True)
 
     @quotes.command(description="Get all quotes")
     @commands.guild_only()
@@ -185,7 +183,8 @@ class Quotes(commands.Cog):
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
         data = r.json()
-        await ctx.respond(f'{data}', ephemeral=True)
+        for quote in data:
+            await ctx.respond(f'{quote}', ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Quotes(bot))

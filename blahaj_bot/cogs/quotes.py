@@ -10,7 +10,6 @@ from requests import HTTPError
 
 from blahaj_bot import BotClient, logger, __version__
 
-
 class Quote:
     quote: str
     person: str
@@ -194,7 +193,7 @@ class Quotes(commands.Cog):
         quotes.sort(key=lambda q: q.id) # Ensure it's in order
         res = list(map(lambda q : create_quote_embed(q), quotes))
         paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
-        await paginator.respond(ctx.interaction, ephemeral=False)
+        await paginator.respond(ctx.interaction, ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Quotes(bot))

@@ -12,7 +12,8 @@ dependencies = [
     "backloggery",
     "py-cord>=2.6.1",
     "pymongo>=4.13.0",
-    "urllib3>=2.2.3",
+    "requests>=2.32.5",
+    "urllib3>=2.3.0",
 ]
 
 [project.scripts]

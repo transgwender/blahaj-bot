@@ -3,7 +3,7 @@ from json import JSONEncoder
 
 import discord
 from discord import SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 
 import requests
 from requests import HTTPError
@@ -37,6 +37,11 @@ def as_quote(dct: dict):
     if 'quote' not in dct:
         return None
     return Quote(**dct)
+
+
+def create_quote_embed(quote: Quote):
+    embed = discord.Embed(title=f'#{quote.id}', description=quote)
+    return embed
 
 class Quotes(commands.Cog):
 
@@ -183,8 +188,13 @@ class Quotes(commands.Cog):
             await ctx.respond(f'Failed to reach server', ephemeral=True)
             return
         data = r.json()
+        quotes = []
         for quote in data:
-            await ctx.respond(f'{as_quote(quote)}', ephemeral=True)
+            quotes.append(as_quote(quote))
+        quotes.sort(key=lambda q: q.id) # Ensure it's in order
+        res = list(map(lambda q : create_quote_embed(q), quotes))
+        paginator = pages.Paginator(pages=res, show_disabled=False, loop_pages=True)
+        await paginator.respond(ctx.interaction, ephemeral=False)
 
 def setup(bot):
     bot.add_cog(Quotes(bot))

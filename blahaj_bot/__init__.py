@@ -4,7 +4,7 @@ Discord Bot
 
 __title__ = 'blahaj-bot'
 __author__ = 'transgwender'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 import json
 import time

@@ -184,7 +184,7 @@ class Quotes(commands.Cog):
             return
         data = r.json()
         for quote in data:
-            await ctx.respond(f'{quote}', ephemeral=True)
+            await ctx.respond(f'{as_quote(quote)}', ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Quotes(bot))

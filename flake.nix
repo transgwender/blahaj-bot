@@ -265,6 +265,7 @@
             ({ pkgs, config, inputs, ... }: {
               # Only allow this to boot as a container
               boot.isContainer = true;
+              boot.isNspawnContainer = true;
 
               networking.hostName = "blahaj-bot";
 

@@ -48,6 +48,7 @@ def bot() -> None:
 
     bot_client = BotClient(db=db_client, command_prefix=commands.when_mentioned_or("$"), backlog=backlog_client, quotes_auth_token=QUOTES_AUTH_TOKEN, intents=intents)
 
+    logger.info(f'Beginning bot run - Version {__version__}')
     for i in range(3, 100):
         try:
             bot_client.run(BOT_TOKEN)
